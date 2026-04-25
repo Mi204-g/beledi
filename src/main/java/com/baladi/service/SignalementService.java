@@ -5,6 +5,9 @@ import com.baladi.model.*;
 import com.baladi.repository.SignalementRepository;
 import com.baladi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +60,19 @@ public class SignalementService {
      */
     public List<Signalement> getAllSignalements() {
         return signalementRepository.findAll();
+    }
+
+    /**
+     * Retourne les signalements avec pagination et tri.
+     * @param page Numéro de page (0-indexed)
+     * @param size Nombre d'éléments par page
+     * @param sortBy Champ de tri (dateCreation, titre, statut, etc.)
+     * @param descending True pour tri descendant
+     */
+    public Page<Signalement> getAllSignalementsPageable(int page, int size, String sortBy, boolean descending) {
+        Sort.Direction direction = descending ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+        return signalementRepository.findAll(PageRequest.of(page, size, sort));
     }
 
     /**
@@ -146,5 +162,60 @@ public class SignalementService {
         stats.put("total", signalementRepository.count());
 
         return stats;
+    }
+
+    /**
+     * Met à jour un signalement (le citoyen ne peut modifier que ses propres signalements en cours).
+     * @param id ID du signalement
+     * @param dto Nouvelles données
+     * @return Le signalement mis à jour
+     */
+    public Signalement updateSignalement(Long id, SignalementDTO dto) {
+        Signalement signalement = getSignalementById(id);
+        User currentUser = getCurrentUser();
+
+        // Vérifier que l'utilisateur est le propriétaire ou un admin
+        if (!signalement.getUser().getId().equals(currentUser.getId()) && 
+            !currentUser.getRole().name().equals("ADMIN")) {
+            throw new RuntimeException("Vous n'avez pas le droit de modifier ce signalement");
+        }
+
+        // Les citoyens ne peuvent pas modifier si le signalement est résolu
+        if (!currentUser.getRole().name().equals("ADMIN") && 
+            signalement.getStatut() == Statut.RESOLU) {
+            throw new RuntimeException("Impossible de modifier un signalement résolu");
+        }
+
+        signalement.setTitre(dto.getTitre());
+        signalement.setDescription(dto.getDescription());
+        signalement.setPhotoUrl(dto.getPhotoUrl());
+        signalement.setLatitude(dto.getLatitude());
+        signalement.setLongitude(dto.getLongitude());
+        signalement.setCategorie(dto.getCategorie());
+
+        return signalementRepository.save(signalement);
+    }
+
+    /**
+     * Supprime un signalement (seulement l'auteur ou admin peuvent).
+     * @param id ID du signalement
+     */
+    public void deleteSignalement(Long id) {
+        Signalement signalement = getSignalementById(id);
+        User currentUser = getCurrentUser();
+
+        // Vérifier que l'utilisateur est le propriétaire ou un admin
+        if (!signalement.getUser().getId().equals(currentUser.getId()) && 
+            !currentUser.getRole().name().equals("ADMIN")) {
+            throw new RuntimeException("Vous n'avez pas le droit de supprimer ce signalement");
+        }
+
+        // Les citoyens ne peuvent pas supprimer si le signalement est en cours
+        if (!currentUser.getRole().name().equals("ADMIN") && 
+            signalement.getStatut() == Statut.EN_COURS) {
+            throw new RuntimeException("Impossible de supprimer un signalement en cours de traitement");
+        }
+
+        signalementRepository.deleteById(id);
     }
 }

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Baladi — Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        code { background: #f5f5f5; padding: 2px 6px; border-radius: 4px; font-family: 'Courier New'; }
+        .endpoint { background: #f9fafb; border-left: 4px solid #2563eb; padding: 16px; margin: 16px 0; border-radius: 8px; }
+        .method-get { border-left-color: #10b981; }
+        .method-post { border-left-color: #3b82f6; }
+        .method-put { border-left-color: #f59e0b; }
+        .method-delete { border-left-color: #ef4444; }
+        .badge-get { background: #d1fae5; color: #065f46; }
+        .badge-post { background: #dbeafe; color: #1e40af; }
+        .badge-put { background: #fef3c7; color: #b45309; }
+        .badge-delete { background: #fee2e2; color: #7f1d1d; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+<div class="max-w-4xl mx-auto px-4 py-12">
+    <div class="mb-12">
+        <h1 class="text-4xl font-black text-gray-900 mb-2">API Baladi</h1>
+        <p class="text-gray-600 text-lg">Documentation complète des endpoints</p>
+    </div>
+
+    <!-- Authentication -->
+    <section class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Authentification</h2>
+        
+        <div class="endpoint method-post">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="badge-post font-bold px-3 py-1 rounded">POST</span>
+                <code class="text-lg">/api/auth/register</code>
+            </div>
+            <p class="text-gray-600 mb-3">Créer un nouveau compte utilisateur</p>
+            <pre class="bg-white p-3 rounded border border-gray-200 text-sm overflow-x-auto"><span class="text-blue-600">{</span>
+  "nom": "Ahmed Ould Mohamed",
+  "email": "ahmed@example.com",
+  "motDePasse": "password123"
+<span class="text-blue-600">}</span></pre>
+        </div>
+
+        <div class="endpoint method-post">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="badge-post font-bold px-3 py-1 rounded">POST</span>
+                <code class="text-lg">/api/auth/login</code>
+            </div>
+            <p class="text-gray-600 mb-3">Authentifier un utilisateur et récupérer son token JWT</p>
+            <pre class="bg-white p-3 rounded border border-gray-200 text-sm overflow-x-auto"><span class="text-blue-600">{</span>
+  "email": "ahmed@example.com",
+  "motDePasse": "password123"
+<span class="text-blue-600">}</span></pre>
+        </div>
+    </section>
+
+    <!-- Signalements -->
+    <section class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Signalements</h2>
+        
+        <div class="endpoint method-get">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="badge-get font-bold px-3 py-1 rounded">GET</span>
+                <code class="text-lg">/api/signalements</code>
+            </div>
+            <p class="text-gray-600 mb-3">Récupérer tous les signalements (public)</p>
+        </div>
+
+        <div class="endpoint method-get">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="badge-get font-bold px-3 py-1 rounded">GET</span>
+                <code class="text-lg">/api/signalements/page</code>
+            </div>
+            <p class="text-gray-600 mb-3">Récupérer les signalements avec pagination</p>
+            <p class="text-sm text-gray-500 mb-2"><strong>Paramètres:</strong></p>
+            <ul class="text-sm text-gray-500 list-disc list-inside mb-3">
+                <li><code>page</code> — Numéro de page (défaut: 0)</li>
+                <li><code>size</code> — Éléments par page (défaut: 10)</li>
+                <li><code>sortBy</code> — Champ de tri (défaut: dateCreation)</li>
+                <li><code>descending</code> — Tri descendant (défaut: true)</li>
+            </ul>
+        </div>
+
+        <div class="endpoint method-get">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="badge-get font-bold px-3 py-1 rounded">GET</span>
+                <code class="text-lg">/api/signalements/{id}</code>
+            </div>
+            <p class="text-gray-600 mb-3">Récupérer un signalement spécifique (public)</p>
+        </div>
+
+        <div class="endpoint method-get">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="badge-get font-bold px-3 py-1 rounded">GET</span>
+                <code class="text-lg">/api/signalements/mes</code>
+            </div>
+            <p class="text-gray-600 mb-3">Récupérer mes signalements (authentifié)</p>
+            <p class="text-sm text-gray-500">Nécessite: <code>Authorization: Bearer {token}</code></p>
+        </div>
+
+        <div class="endpoint method-post">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="badge-post font-bold px-3 py-1 rounded">POST</span>
+                <code class="text-lg">/api/signalements</code>
+            </div>
+            <p class="text-gray-600 mb-3">Créer un nouveau signalement (authentifié)</p>
+            <pre class="bg-white p-3 rounded border border-gray-200 text-sm overflow-x-auto"><span class="text-blue-600">{</span>
+  "titre": "Nid de poule dangereux",
+  "description": "Grand trou sur la route principale",
+  "categorie": "VOIRIE",
+  "latitude": 18.0785,
+  "longitude": -15.9654,
+  "photoUrl": "https://xxx.com/photo.jpg"
+<span class="text-blue-600">}</span></pre>
+        </div>
+
+        <div class="endpoint method-put">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="badge-put font-bold px-3 py-1 rounded">PUT</span>
+                <code class="text-lg">/api/signalements/{id}</code>
+            </div>
+            <p class="text-gray-600 mb-3">Mettre à jour un signalement (authentifié - auteur ou admin)</p>
+            <p class="text-sm text-gray-500 mb-2">Même format que POST</p>
+        </div>
+
+        <div class="endpoint method-put">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="badge-put font-bold px-3 py-1 rounded">PUT</span>
+                <code class="text-lg">/api/signalements/{id}/statut</code>
+            </div>
+            <p class="text-gray-600 mb-3">Mettre à jour le statut (admin seulement)</p>
+            <pre class="bg-white p-3 rounded border border-gray-200 text-sm overflow-x-auto"><span class="text-blue-600">{</span>
+  "statut": "EN_COURS"
+<span class="text-blue-600">}</span></pre>
+            <p class="text-sm text-gray-500 mt-2">Valeurs: EN_ATTENTE, EN_COURS, RESOLU</p>
+        </div>
+
+        <div class="endpoint method-delete">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="badge-delete font-bold px-3 py-1 rounded">DELETE</span>
+                <code class="text-lg">/api/signalements/{id}</code>
+            </div>
+            <p class="text-gray-600 mb-3">Supprimer un signalement (authentifié - auteur ou admin)</p>
+        </div>
+    </section>
+
+    <!-- Commentaires -->
+    <section class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Commentaires</h2>
+        
+        <div class="endpoint method-get">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="badge-get font-bold px-3 py-1 rounded">GET</span>
+                <code class="text-lg">/api/signalements/{id}/commentaires</code>
+            </div>
+            <p class="text-gray-600 mb-3">Récupérer tous les commentaires d'un signalement (public)</p>
+        </div>
+
+        <div class="endpoint method-get">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="badge-get font-bold px-3 py-1 rounded">GET</span>
+                <code class="text-lg">/api/signalements/{id}/commentaires/{commentaireId}</code>
+            </div>
+            <p class="text-gray-600 mb-3">Récupérer un commentaire spécifique (public)</p>
+        </div>
+
+        <div class="endpoint method-post">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="badge-post font-bold px-3 py-1 rounded">POST</span>
+                <code class="text-lg">/api/signalements/{id}/commentaires</code>
+            </div>
+            <p class="text-gray-600 mb-3">Ajouter un commentaire (authentifié)</p>
+            <pre class="bg-white p-3 rounded border border-gray-200 text-sm overflow-x-auto"><span class="text-blue-600">{</span>
+  "contenu": "Merci d'avoir signalé ce problème!"
+<span class="text-blue-600">}</span></pre>
+        </div>
+
+        <div class="endpoint method-put">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="badge-put font-bold px-3 py-1 rounded">PUT</span>
+                <code class="text-lg">/api/signalements/{id}/commentaires/{commentaireId}</code>
+            </div>
+            <p class="text-gray-600 mb-3">Mettre à jour un commentaire (authentifié - auteur ou admin)</p>
+        </div>
+
+        <div class="endpoint method-delete">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="badge-delete font-bold px-3 py-1 rounded">DELETE</span>
+                <code class="text-lg">/api/signalements/{id}/commentaires/{commentaireId}</code>
+            </div>
+            <p class="text-gray-600 mb-3">Supprimer un commentaire (authentifié - auteur ou admin)</p>
+        </div>
+    </section>
+
+    <!-- Admin -->
+    <section class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Dashboard Admin</h2>
+        
+        <div class="endpoint method-get">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="badge-get font-bold px-3 py-1 rounded">GET</span>
+                <code class="text-lg">/api/admin/statistiques</code>
+            </div>
+            <p class="text-gray-600 mb-3">Récupérer les statistiques du dashboard (admin seulement)</p>
+            <p class="text-sm text-gray-500">Retourne: counts par statut, counts par catégorie, total</p>
+        </div>
+    </section>
+
+    <!-- Catégories -->
+    <section class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Valeurs Énumérées</h2>
+        
+        <div class="grid grid-cols-2 gap-6">
+            <div>
+                <h3 class="font-semibold text-gray-900 mb-3">Catégories</h3>
+                <ul class="text-sm text-gray-600 space-y-1">
+                    <li><code>VOIRIE</code> — Routes et voirie</li>
+                    <li><code>ELECTRICITE</code> — Électricité</li>
+                    <li><code>DECHETS</code> — Déchets</li>
+                    <li><code>EAU</code> — Adduction d'eau</li>
+                    <li><code>AUTRE</code> — Autre</li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-semibold text-gray-900 mb-3">Statuts</h3>
+                <ul class="text-sm text-gray-600 space-y-1">
+                    <li><code>EN_ATTENTE</code> — En attente</li>
+                    <li><code>EN_COURS</code> — En cours de traitement</li>
+                    <li><code>RESOLU</code> — Résolu</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>

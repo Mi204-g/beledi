@@ -46,6 +46,13 @@ async function apiPut(path, data) {
     });
     return { status: res.status, data: await res.json() };
 }
+async function apiDelete(path) {
+    const res = await fetch(API_BASE + path, {
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer ' + getToken() }
+    });
+    return { status: res.status, data: await res.json() };
+}
 
 // ── Domain constants ──────────────────────────────────────────────────────────
 const CAT_ICONS   = { VOIRIE:'fa-road', ELECTRICITE:'fa-bolt', DECHETS:'fa-trash', EAU:'fa-tint', AUTRE:'fa-exclamation-circle' };
