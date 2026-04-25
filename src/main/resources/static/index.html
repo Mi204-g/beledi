@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baladi — Ensemble pour une meilleure ville</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
+<style>
+* { font-family: 'Inter', sans-serif; }
+.hero-gradient { background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 40%, #0ea5e9 80%, #06b6d4 100%); }
+.hero-shape { position:absolute; border-radius:50%; background:rgba(255,255,255,0.06); }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
+.float-shape { animation: float 8s ease-in-out infinite; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+.fade-up { animation: fadeUp 0.5s ease forwards; opacity:0; }
+.card-hover { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.12); }
+.filter-btn { background:#f1f5f9; color:#64748b; transition:all 0.2s; border:2px solid transparent; }
+.filter-btn:hover { background:#e0e7ff; color:#4338ca; }
+.filter-btn.active { background:linear-gradient(135deg,#2563eb,#0ea5e9); color:white; border-color:transparent; box-shadow:0 4px 12px rgba(37,99,235,0.3); }
+.stat-card { background:rgba(255,255,255,0.12); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.2); border-radius:16px; }
+</style>
+</head>
+<body class="bg-gray-50">
+
+<div id="navContainer"></div>
+
+<!-- HERO ──────────────────────────────────────────────────────────── -->
+<section class="hero-gradient relative overflow-hidden py-32 md:py-40">
+  <div class="hero-shape float-shape w-96 h-96 -top-20 -right-20"></div>
+  <div class="hero-shape w-64 h-64 top-1/2 -left-10" style="animation:float 10s ease-in-out infinite reverse"></div>
+  <div class="hero-shape w-40 h-40 bottom-10 right-1/3" style="animation:float 6s ease-in-out infinite 2s"></div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="max-w-3xl">
+      <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white/90 text-sm font-medium px-4 py-2 rounded-full mb-8 border border-white/20">
+        <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+        Plateforme citoyenne · Nouakchott
+      </div>
+      <h1 class="text-5xl md:text-7xl font-black text-white leading-[1.1] mb-6 fade-up" style="animation-delay:0.1s">
+        Signalez.<br>
+        <span class="text-cyan-300">Améliorez.</span><br>
+        Ensemble.
+      </h1>
+      <p class="text-xl text-white/75 mb-10 max-w-xl fade-up" style="animation-delay:0.2s">
+        Rejoignez la communauté de citoyens qui transforment leur ville en signalant les problèmes d'infrastructure.
+      </p>
+      <div class="flex flex-wrap gap-4 fade-up" style="animation-delay:0.3s">
+        <a href="/register.html" id="heroCtaBtn"
+           class="inline-flex items-center gap-2 bg-white text-blue-700 font-bold px-8 py-4 rounded-2xl hover:shadow-2xl hover:shadow-white/30 hover:-translate-y-1 transition-all duration-200 text-lg">
+          <i class="fas fa-plus"></i>Signaler un problème
+        </a>
+        <a href="#signalements"
+           class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white font-semibold px-8 py-4 rounded-2xl hover:bg-white/20 transition-all duration-200 border border-white/25 text-lg">
+          <i class="fas fa-eye"></i>Voir les signalements
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="absolute bottom-0 left-0 right-0">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <div class="grid grid-cols-3 gap-4 md:gap-8 max-w-lg mx-auto md:mx-0">
+        <div class="stat-card p-4 text-center">
+          <div class="text-3xl font-black text-white" id="statTotal">—</div>
+          <div class="text-white/60 text-xs mt-1">Signalements</div>
+        </div>
+        <div class="stat-card p-4 text-center">
+          <div class="text-3xl font-black text-cyan-300" id="statResolu">—</div>
+          <div class="text-white/60 text-xs mt-1">Résolus</div>
+        </div>
+        <div class="stat-card p-4 text-center">
+          <div class="text-3xl font-black text-amber-300" id="statAttente">—</div>
+          <div class="text-white/60 text-xs mt-1">En attente</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIGNALEMENTS ────────────────────────────────────────────────── -->
+<section id="signalements" class="py-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-14">
+      <span class="inline-block bg-blue-50 text-blue-600 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">En temps réel</span>
+      <h2 class="text-4xl md:text-5xl font-black text-gray-900 mb-4">Signalements récents</h2>
+      <p class="text-gray-500 text-lg">Suivez les problèmes signalés dans votre quartier</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="flex flex-wrap gap-2 mb-10 justify-center">
+      <button class="filter-btn active px-5 py-2.5 rounded-xl font-semibold text-sm" onclick="applyFilter('statut','tous',this)">
+        <i class="fas fa-th-large mr-1.5"></i>Tous
+      </button>
+      <button class="filter-btn px-5 py-2.5 rounded-xl font-semibold text-sm" onclick="applyFilter('statut','EN_ATTENTE',this)">
+        <i class="fas fa-clock mr-1.5"></i>En attente
+      </button>
+      <button class="filter-btn px-5 py-2.5 rounded-xl font-semibold text-sm" onclick="applyFilter('statut','EN_COURS',this)">
+        <i class="fas fa-spinner mr-1.5"></i>En cours
+      </button>
+      <button class="filter-btn px-5 py-2.5 rounded-xl font-semibold text-sm" onclick="applyFilter('statut','RESOLU',this)">
+        <i class="fas fa-check-circle mr-1.5"></i>Résolu
+      </button>
+      <span class="w-px bg-gray-200 mx-1 self-stretch"></span>
+      <button class="filter-btn px-5 py-2.5 rounded-xl font-semibold text-sm" onclick="applyFilter('cat','VOIRIE',this)">
+        <i class="fas fa-road mr-1.5"></i>Voirie
+      </button>
+      <button class="filter-btn px-5 py-2.5 rounded-xl font-semibold text-sm" onclick="applyFilter('cat','ELECTRICITE',this)">
+        <i class="fas fa-bolt mr-1.5"></i>Électricité
+      </button>
+      <button class="filter-btn px-5 py-2.5 rounded-xl font-semibold text-sm" onclick="applyFilter('cat','DECHETS',this)">
+        <i class="fas fa-trash mr-1.5"></i>Déchets
+      </button>
+      <button class="filter-btn px-5 py-2.5 rounded-xl font-semibold text-sm" onclick="applyFilter('cat','EAU',this)">
+        <i class="fas fa-tint mr-1.5"></i>Eau
+      </button>
+    </div>
+
+    <div id="signalementsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Skeletons -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm animate-pulse"><div class="h-5 bg-gray-200 rounded-lg w-3/4 mb-4"></div><div class="h-3 bg-gray-100 rounded w-full mb-2"></div><div class="h-3 bg-gray-100 rounded w-2/3 mb-6"></div><div class="flex gap-2"><div class="h-6 bg-gray-200 rounded-xl w-24"></div><div class="h-6 bg-gray-100 rounded-xl w-20 ml-auto"></div></div></div>
+      <div class="bg-white rounded-2xl p-6 shadow-sm animate-pulse"><div class="h-5 bg-gray-200 rounded-lg w-3/4 mb-4"></div><div class="h-3 bg-gray-100 rounded w-full mb-2"></div><div class="h-3 bg-gray-100 rounded w-2/3 mb-6"></div><div class="flex gap-2"><div class="h-6 bg-gray-200 rounded-xl w-24"></div><div class="h-6 bg-gray-100 rounded-xl w-20 ml-auto"></div></div></div>
+      <div class="bg-white rounded-2xl p-6 shadow-sm animate-pulse"><div class="h-5 bg-gray-200 rounded-lg w-3/4 mb-4"></div><div class="h-3 bg-gray-100 rounded w-full mb-2"></div><div class="h-3 bg-gray-100 rounded w-2/3 mb-6"></div><div class="flex gap-2"><div class="h-6 bg-gray-200 rounded-xl w-24"></div><div class="h-6 bg-gray-100 rounded-xl w-20 ml-auto"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MAP ────────────────────────────────────────────────────────── -->
+<section id="carte" class="py-24 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-14">
+      <span class="inline-block bg-cyan-50 text-cyan-600 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">Géolocalisation</span>
+      <h2 class="text-4xl md:text-5xl font-black text-gray-900 mb-4">Carte interactive</h2>
+      <p class="text-gray-500 text-lg">Visualisez tous les signalements sur la carte de Nouakchott</p>
+    </div>
+    <!-- Legend -->
+    <div class="flex flex-wrap gap-4 justify-center mb-6">
+      <div class="flex items-center gap-2 text-sm text-gray-600"><span class="w-3 h-3 rounded-full bg-amber-400 shadow-sm"></span>En attente</div>
+      <div class="flex items-center gap-2 text-sm text-gray-600"><span class="w-3 h-3 rounded-full bg-blue-500 shadow-sm"></span>En cours</div>
+      <div class="flex items-center gap-2 text-sm text-gray-600"><span class="w-3 h-3 rounded-full bg-emerald-500 shadow-sm"></span>Résolu</div>
+    </div>
+    <div id="map" class="w-full h-[500px] rounded-3xl overflow-hidden shadow-2xl ring-1 ring-gray-100"></div>
+  </div>
+</section>
+
+<!-- CTA ──────────────────────────────────────────────────────── -->
+<section class="py-24 hero-gradient">
+  <div class="max-w-3xl mx-auto px-4 text-center">
+    <h2 class="text-4xl md:text-5xl font-black text-white mb-6">Votre voix compte.</h2>
+    <p class="text-xl text-white/75 mb-10">Chaque signalement est une action concrète pour améliorer votre quartier.</p>
+    <a href="/register.html" class="inline-flex items-center gap-2 bg-white text-blue-700 font-bold px-10 py-5 rounded-2xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 text-lg">
+      <i class="fas fa-plus"></i>Commencer maintenant
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER ──────────────────────────────────────────────────── -->
+<footer class="bg-gray-950 text-white py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-xl flex items-center justify-center">
+          <i class="fas fa-city text-white"></i>
+        </div>
+        <div>
+          <div class="font-black text-xl">BALADI</div>
+          <div class="text-gray-400 text-xs">Plateforme citoyenne</div>
+        </div>
+      </div>
+      <div class="flex gap-6 text-gray-400 text-sm">
+        <a href="/" class="hover:text-white transition-colors">Accueil</a>
+        <a href="#signalements" class="hover:text-white transition-colors">Signalements</a>
+        <a href="#carte" class="hover:text-white transition-colors">Carte</a>
+      </div>
+      <div class="text-gray-500 text-sm">© 2026 Baladi — Groupe G11</div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/utils.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+document.getElementById('navContainer').innerHTML = renderNavbar();
+
+// Update CTA button if already logged in
+const me = getUser();
+if (me) {
+  const btn = document.getElementById('heroCtaBtn');
+  btn.href = me.role === 'ADMIN' ? '/admin.html' : '/dashboard.html';
+}
+
+let allData = [];
+let filterStatut = 'tous', filterCat = null;
+
+async function load() {
+  try {
+    allData = await apiGet('/signalements');
+    updateStats(allData);
+    renderCards(allData);
+    initMap(allData);
+  } catch(e) {
+    document.getElementById('signalementsList').innerHTML =
+      `<div class="col-span-3 text-center py-20 text-gray-400"><i class="fas fa-wifi-slash text-5xl mb-4"></i><p class="text-lg">Impossible de charger les signalements</p></div>`;
+  }
+}
+
+function updateStats(data) {
+  document.getElementById('statTotal').textContent   = data.length;
+  document.getElementById('statResolu').textContent  = data.filter(s=>s.statut==='RESOLU').length;
+  document.getElementById('statAttente').textContent = data.filter(s=>s.statut==='EN_ATTENTE').length;
+}
+
+function renderCards(data) {
+  const el = document.getElementById('signalementsList');
+  if (!data.length) {
+    el.innerHTML = `<div class="col-span-3 text-center py-20 text-gray-400"><i class="fas fa-search text-5xl mb-4 opacity-30"></i><p class="text-lg">Aucun signalement trouvé</p></div>`;
+    return;
+  }
+  el.innerHTML = data.map((s,i) => `
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 card-hover overflow-hidden fade-up" style="animation-delay:${i*40}ms">
+      <div class="p-6">
+        <div class="flex items-start justify-between gap-3 mb-3">
+          <h3 class="font-bold text-gray-900 text-lg leading-snug line-clamp-2 flex-1">${s.titre}</h3>
+          ${catBadge(s.categorie)}
+        </div>
+        <p class="text-gray-500 text-sm line-clamp-2 mb-5">${s.description}</p>
+        <div class="flex items-center justify-between">
+          ${statutBadge(s.statut)}
+          <span class="text-xs text-gray-400 flex items-center gap-1">
+            <i class="fas fa-user text-gray-300"></i>${s.user?.nom?.split(' ')[0] || 'Anonyme'}
+          </span>
+        </div>
+        ${s.latitude&&s.longitude?`
+        <div class="mt-4 pt-4 border-t border-gray-50 flex items-center gap-1.5 text-xs text-gray-400">
+          <i class="fas fa-map-marker-alt text-red-400"></i>
+          ${s.latitude.toFixed(4)}, ${s.longitude.toFixed(4)}
+          <span class="ml-auto">${timeAgo(s.dateCreation)}</span>
+        </div>`:''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function applyFilter(type, val, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if (type==='statut') { filterStatut=val; filterCat=null; }
+  else                 { filterCat=val; filterStatut='tous'; }
+  let filtered = allData;
+  if (filterStatut!=='tous') filtered = filtered.filter(s=>s.statut===filterStatut);
+  if (filterCat)             filtered = filtered.filter(s=>s.categorie===filterCat);
+  renderCards(filtered);
+}
+
+function initMap(data) {
+  const map = L.map('map').setView([18.08, -15.97], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors', maxZoom:19
+  }).addTo(map);
+
+  data.forEach(s => {
+    if (!s.latitude || !s.longitude) return;
+    const color = STAT_COLORS[s.statut] || '#6b7280';
+    const icon = L.divIcon({
+      html: `<div style="width:16px;height:16px;background:${color};border:3px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.25)"></div>`,
+      iconSize:[16,16], iconAnchor:[8,8], className:''
+    });
+    L.marker([s.latitude, s.longitude], {icon}).addTo(map).bindPopup(`
+      <div style="font-family:Inter,sans-serif;min-width:200px;padding:4px">
+        <p style="font-weight:800;font-size:14px;margin:0 0 6px">${s.titre}</p>
+        <p style="font-size:12px;color:#6b7280;margin:0 0 10px;line-clamp:2">${s.description.substring(0,90)}…</p>
+        <span style="background:${color}22;color:${color};padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700">${STAT_LABELS[s.statut]}</span>
+      </div>
+    `);
+  });
+}
+
+load();
+</script>
+</body>
+</html>
