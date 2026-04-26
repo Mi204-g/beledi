@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Baladi — Ensemble pour une meilleure ville</title>
+<title>Beledi — Ensemble pour une meilleure ville</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -11,7 +11,7 @@
 <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
 <style>
 * { font-family: 'Inter', sans-serif; }
-.hero-gradient { background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 40%, #0ea5e9 80%, #06b6d4 100%); }
+.hero-gradient { background: linear-gradient(135deg, #000000 0%, #1e3a8a 40%, #000000 80%, #1e3a8a 100%); }
 .hero-shape { position:absolute; border-radius:50%; background:rgba(255,255,255,0.06); }
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
 .float-shape { animation: float 8s ease-in-out infinite; }
@@ -19,13 +19,13 @@
 .fade-up { animation: fadeUp 0.5s ease forwards; opacity:0; }
 .card-hover { transition: transform 0.25s ease, box-shadow 0.25s ease; }
 .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.12); }
-.filter-btn { background:#f1f5f9; color:#64748b; transition:all 0.2s; border:2px solid transparent; }
-.filter-btn:hover { background:#e0e7ff; color:#4338ca; }
-.filter-btn.active { background:linear-gradient(135deg,#2563eb,#0ea5e9); color:white; border-color:transparent; box-shadow:0 4px 12px rgba(37,99,235,0.3); }
+.filter-btn { background:#374151; color:#cbd5e1; transition:all 0.2s; border:2px solid transparent; }
+.filter-btn:hover { background:#4b5563; color:#f1f5f9; }
+.filter-btn.active { background:linear-gradient(135deg,#1e3a8a,#000000); color:white; border-color:transparent; box-shadow:0 4px 12px rgba(30,58,138,0.3); }
 .stat-card { background:rgba(255,255,255,0.12); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.2); border-radius:16px; }
 </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-black">
 
 <div id="navContainer"></div>
 
@@ -84,12 +84,12 @@
 </section>
 
 <!-- SIGNALEMENTS ────────────────────────────────────────────────── -->
-<section id="signalements" class="py-24">
+<section id="signalements" class="py-24 bg-gray-900 text-white">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-14">
-      <span class="inline-block bg-blue-50 text-blue-600 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">En temps réel</span>
-      <h2 class="text-4xl md:text-5xl font-black text-gray-900 mb-4">Signalements récents</h2>
-      <p class="text-gray-500 text-lg">Suivez les problèmes signalés dans votre quartier</p>
+      <span class="inline-block bg-blue-900 text-blue-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">En temps réel</span>
+      <h2 class="text-4xl md:text-5xl font-black text-white mb-4">Signalements récents</h2>
+      <p class="text-gray-300 text-lg">Suivez les problèmes signalés dans votre quartier</p>
     </div>
 
     <!-- Filters -->
@@ -168,7 +168,7 @@
           <i class="fas fa-city text-white"></i>
         </div>
         <div>
-          <div class="font-black text-xl">BALADI</div>
+          <div class="font-black text-xl">BELEDI</div>
           <div class="text-gray-400 text-xs">Plateforme citoyenne</div>
         </div>
       </div>
@@ -177,7 +177,7 @@
         <a href="#signalements" class="hover:text-white transition-colors">Signalements</a>
         <a href="#carte" class="hover:text-white transition-colors">Carte</a>
       </div>
-      <div class="text-gray-500 text-sm">© 2026 Baladi — Groupe G11</div>
+      <div class="text-gray-500 text-sm">© 2026 Beledi — Groupe G11</div>
     </div>
   </div>
 </footer>

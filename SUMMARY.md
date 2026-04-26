@@ -1,4 +1,4 @@
-# 📋 RÉSUMÉ DES MODIFICATIONS — Baladi v1.1.0
+# 📋 RÉSUMÉ DES MODIFICATIONS — Beledi v1.1.0
 
 ## 🎯 Objectif Accompli
 ✅ **Votre projet est maintenant COMPLET et FONCTIONNEL**
@@ -21,7 +21,7 @@ org.postgresql.util.PSQLException: FATAL: password authentication failed for use
 spring.datasource.url=jdbc:postgresql://aws-1-eu-west-3.pooler.supabase.com:6543/postgres
 
 # APRÈS: H2 local (sans dépendance externe)
-spring.datasource.url=jdbc:h2:mem:baladidb
+spring.datasource.url=jdbc:h2:mem:beledidb
 ```
 ✅ **Résultat**: Application démarre sans erreur, données testables localement
 
@@ -258,11 +258,11 @@ pom.xml
 # AVANT
 spring.datasource.url=jdbc:postgresql://aws-1-eu-west-3.pooler.supabase.com:6543/postgres?sslmode=require
 spring.datasource.username=postgres.njnwfcbgreigrxlpitpr
-spring.datasource.password=Baladi2026@db
+spring.datasource.password=Beledi2026@db
 spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
 
 # APRÈS
-spring.datasource.url=jdbc:h2:mem:baladidb
+spring.datasource.url=jdbc:h2:mem:beledidb
 spring.datasource.driverClassName=org.h2.Driver
 spring.datasource.username=sa
 spring.datasource.password=
@@ -387,4 +387,4 @@ Pour questions / problèmes:
 **Date**: 25 Avril 2026
 **État**: ✅ COMPLET & FONCTIONNEL
 
-🎊 Félicitations pour votre plateforme Baladi! 🎊
+🎊 Félicitations pour votre plateforme Beledi! 🎊

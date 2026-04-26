@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Connexion — Baladi</title>
+<title>Connexion — Beledi</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
 <style>
 * { font-family: 'Inter', sans-serif; }
-.page-gradient { background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 45%, #0ea5e9 80%, #06b6d4 100%); min-height:100vh; }
+.page-gradient { background: linear-gradient(135deg, #000000 0%, #1e3a8a 45%, #000000 80%, #1e3a8a 100%); min-height:100vh; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 .fade-up { animation: fadeUp 0.45s ease forwards; }
 .input-field {
@@ -33,7 +33,7 @@
     <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl">
       <i class="fas fa-city text-white text-2xl"></i>
     </div>
-    <h1 class="text-3xl font-black text-white">BALADI</h1>
+    <h1 class="text-3xl font-black text-white">BELEDI</h1>
     <p class="text-white/65 mt-1">Connexion à votre compte</p>
   </div>
 
@@ -89,12 +89,12 @@
       <div class="mt-6 bg-blue-50 rounded-2xl p-4 border border-blue-100">
         <p class="text-blue-700 text-xs font-semibold mb-2"><i class="fas fa-info-circle mr-1"></i>Comptes de démonstration</p>
         <div class="space-y-1.5">
-          <button onclick="fillDemo('admin@baladi.mr','admin123')" class="w-full text-left text-xs bg-white hover:bg-blue-50 border border-blue-200 rounded-xl px-3 py-2 transition-colors flex items-center justify-between group">
-            <span><span class="font-semibold text-blue-700">Admin</span> — admin@baladi.mr</span>
+          <button onclick="fillDemo('admin@beledi.mr','admin123')" class="w-full text-left text-xs bg-white hover:bg-blue-50 border border-blue-200 rounded-xl px-3 py-2 transition-colors flex items-center justify-between group">
+            <span><span class="font-semibold text-blue-700">Admin</span> — admin@beledi.mr</span>
             <span class="text-blue-400 group-hover:text-blue-600 font-mono">admin123</span>
           </button>
-          <button onclick="fillDemo('ahmed@baladi.mr','citoyen123')" class="w-full text-left text-xs bg-white hover:bg-blue-50 border border-blue-200 rounded-xl px-3 py-2 transition-colors flex items-center justify-between group">
-            <span><span class="font-semibold text-gray-700">Citoyen</span> — ahmed@baladi.mr</span>
+          <button onclick="fillDemo('ahmed@beledi.mr','citoyen123')" class="w-full text-left text-xs bg-white hover:bg-blue-50 border border-blue-200 rounded-xl px-3 py-2 transition-colors flex items-center justify-between group">
+            <span><span class="font-semibold text-gray-700">Citoyen</span> — ahmed@beledi.mr</span>
             <span class="text-blue-400 group-hover:text-blue-600 font-mono">citoyen123</span>
           </button>
         </div>

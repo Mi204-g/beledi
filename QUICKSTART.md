@@ -1,4 +1,4 @@
-🚀 BALADI — GUIDE DE DÉMARRAGE RAPIDE
+🚀 BELEDI — GUIDE DE DÉMARRAGE RAPIDE
 =====================================
 
 Votre projet est maintenant COMPLET et FONCTIONNEL! 
@@ -31,15 +31,15 @@ Voici comment l'utiliser en 5 minutes.
 👤 3. DONNÉES DE TEST DISPONIBLES PAR DÉFAUT
 
    ADMIN:
-   ├─ Email:    admin@baladi.mr
+   ├─ Email:    admin@beledi.mr
    └─ Password: admin123
 
    CITOYEN 1:
-   ├─ Email:    ahmed@baladi.mr
+   ├─ Email:    ahmed@beledi.mr
    └─ Password: citoyen123
 
    CITOYEN 2:
-   ├─ Email:    fatima@baladi.mr
+   ├─ Email:    fatima@beledi.mr
    └─ Password: citoyen123
 
    → 3 signalements de démonstration pré-créés
@@ -61,7 +61,7 @@ Voici comment l'utiliser en 5 minutes.
    ✅ SE CONNECTER (récupérer JWT token):
    curl -X POST http://localhost:8080/api/auth/login \
      -H "Content-Type: application/json" \
-     -d '{"email":"ahmed@baladi.mr","motDePasse":"citoyen123"}'
+     -d '{"email":"ahmed@beledi.mr","motDePasse":"citoyen123"}'
 
    ✅ CRÉER UN SIGNALEMENT (authentifié):
    TOKEN="eyJhbGciOiJIUzI1NiJ9..." # Token reçu du login

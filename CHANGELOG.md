@@ -1,4 +1,4 @@
-# CHANGELOG — Baladi Platform
+# CHANGELOG — Beledi Platform
 
 ## Version 1.1.0 — Complete & Production-Ready (25 Avril 2026)
 

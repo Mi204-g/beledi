@@ -89,38 +89,38 @@ function renderNavbar(activePage = '') {
         { href:'/#carte', label:'Carte', id:'carte' },
     ];
     const navLinks = links.map(l =>
-        `<a href="${l.href}" class="font-medium transition-colors hover:text-blue-600 ${activePage===l.id?'text-blue-600':'text-gray-600'}">${l.label}</a>`
+        `<a href="${l.href}" class="font-medium transition-colors hover:text-blue-400 ${activePage===l.id?'text-blue-400':'text-gray-300'}">${l.label}</a>`
     ).join('');
 
     let authSection;
     if (user) {
         const dashHref = user.role === 'ADMIN' ? '/admin.html' : '/dashboard.html';
         authSection = `
-            <a href="${dashHref}" class="flex items-center gap-2 text-gray-700 hover:text-blue-600 font-medium transition-colors">
+            <a href="${dashHref}" class="flex items-center gap-2 text-gray-300 hover:text-blue-400 font-medium transition-colors">
                 <span class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white text-sm font-bold">
                     ${user.nom.charAt(0).toUpperCase()}
                 </span>
                 <span class="hidden sm:block">${user.nom.split(' ')[0]}</span>
             </a>
-            <button onclick="logout()" class="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-red-500 transition-colors px-3 py-2 rounded-xl hover:bg-red-50">
+            <button onclick="logout()" class="flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-red-400 transition-colors px-3 py-2 rounded-xl hover:bg-red-900">
                 <i class="fas fa-sign-out-alt"></i><span class="hidden sm:block">Déconnexion</span>
             </button>`;
     } else {
         authSection = `
-            <a href="/login.html" class="text-gray-600 hover:text-blue-600 font-medium transition-colors">Se connecter</a>
-            <a href="/register.html" class="bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold px-5 py-2.5 rounded-xl hover:shadow-lg hover:shadow-blue-200 transition-all duration-200 hover:-translate-y-0.5">
+            <a href="/login.html" class="text-gray-300 hover:text-blue-400 font-medium transition-colors">Se connecter</a>
+            <a href="/register.html" class="bg-gradient-to-r from-blue-800 to-blue-600 text-white font-semibold px-5 py-2.5 rounded-xl hover:shadow-lg hover:shadow-blue-900 transition-all duration-200 hover:-translate-y-0.5">
                 <i class="fas fa-user-plus mr-1.5"></i>S'inscrire
             </a>`;
     }
     return `
-    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-sm">
+    <nav class="sticky top-0 z-50 bg-gray-900/80 backdrop-blur-xl border-b border-gray-800 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <a href="/" class="flex items-center gap-2.5 group">
-                    <div class="w-9 h-9 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center shadow-md shadow-blue-200 group-hover:scale-105 transition-transform">
+                    <div class="w-9 h-9 bg-gradient-to-br from-blue-800 to-blue-600 rounded-xl flex items-center justify-center shadow-md shadow-blue-900 group-hover:scale-105 transition-transform">
                         <i class="fas fa-city text-white text-sm"></i>
                     </div>
-                    <span class="text-xl font-black bg-gradient-to-r from-blue-700 to-cyan-500 bg-clip-text text-transparent">BALADI</span>
+                    <span class="text-xl font-black bg-gradient-to-r from-blue-700 to-cyan-500 bg-clip-text text-transparent">BELEDI</span>
                 </a>
                 <div class="hidden md:flex items-center gap-6">${navLinks}</div>
                 <div class="flex items-center gap-3">${authSection}</div>

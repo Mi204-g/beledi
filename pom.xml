@@ -13,10 +13,10 @@
     </parent>
 
     <!-- ===== Identité du projet ===== -->
-    <groupId>com.baladi</groupId>
-    <artifactId>baladi</artifactId>
+    <groupId>com.beledi</groupId>
+    <artifactId>beledi</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>baladi</name>
+    <name>beledi</name>
     <description>Plateforme de signalement civique - Groupe G11 (24262, 24094, 24204, 24048)</description>
 
     <properties>
