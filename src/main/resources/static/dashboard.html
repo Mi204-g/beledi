@@ -249,11 +249,15 @@
               <label class="block text-sm font-semibold text-gray-600 mb-2">
                 Photo <span class="text-gray-400 font-normal">(optionnel)</span>
               </label>
-              <div class="relative">
-                <i class="fas fa-image absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
-                <input type="file" id="photoFile" class="input-field" style="padding-left:44px" accept="image/*">
-              </div>
-              <p id="photoFileName" class="mt-2 text-xs text-gray-400">Choisissez une image depuis votre ordinateur.</p>
+              <input type="file" id="photoFile" class="hidden" accept="image/*">
+              <label for="photoFile"
+                class="flex items-center justify-between gap-3 border-2 border-dashed border-gray-300 rounded-3xl p-4 bg-white text-sm text-gray-700 cursor-pointer hover:border-cyan-300 transition-all duration-200">
+                <span class="flex items-center gap-2">
+                  <i class="fas fa-cloud-upload-alt text-gray-400"></i>
+                  <span>Ajouter une image</span>
+                </span>
+                <span id="photoFileLabel" class="text-xs text-gray-500">Aucun fichier sélectionné</span>
+              </label>
             </div>
 
             <!-- Submit -->
@@ -365,8 +369,8 @@
     // ── Form submit ───────────────────────────────────────────────────────────────
     document.getElementById('photoFile').addEventListener('change', e => {
       const file = e.target.files[0];
-      const preview = document.getElementById('photoFileName');
-      preview.textContent = file ? `Fichier sélectionné : ${file.name}` : 'Choisissez une image depuis votre ordinateur.';
+      const label = document.getElementById('photoFileLabel');
+      label.textContent = file ? `Fichier sélectionné : ${file.name}` : 'Aucun fichier sélectionné';
     });
 
     document.getElementById('signalementForm').addEventListener('submit', async e => {
