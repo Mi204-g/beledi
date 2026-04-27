@@ -12,7 +12,25 @@ function logout() {
     localStorage.removeItem('baladi_user');
     window.location.href = '/';
 }
-function requireAuth()  { if (!getToken()) { window.location.href = '/login.html'; return false; } return true; }
+function isTokenExpired(token) {
+    if (!token) return true;
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const currentTime = Date.now() / 1000;
+        return payload.exp < currentTime;
+    } catch (e) {
+        return true;
+    }
+}
+
+function requireAuth() {
+    const token = getToken();
+    if (!token || isTokenExpired(token)) {
+        logout();
+        return false;
+    }
+    return true;
+}
 function requireAdmin() {
     const u = getUser();
     if (!u || u.role !== 'ADMIN') { window.location.href = '/'; return false; }
@@ -28,15 +46,34 @@ async function apiGet(path) {
     return res.json();
 }
 async function apiPost(path, data) {
-    const res = await fetch(API_BASE + path, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            ...(getToken() ? { 'Authorization': 'Bearer ' + getToken() } : {})
-        },
-        body: JSON.stringify(data)
-    });
-    return { status: res.status, data: await res.json() };
+    try {
+        const token = getToken();
+        const res = await fetch(API_BASE + path, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+            },
+            body: JSON.stringify(data)
+        });
+
+        let responseData;
+        try {
+            responseData = await res.json();
+        } catch (e) {
+            responseData = { erreur: 'Erreur de réponse du serveur' };
+        }
+
+        if (res.status === 401) {
+            logout();
+            return { status: res.status, data: responseData };
+        }
+
+        return { status: res.status, data: responseData };
+    } catch (error) {
+        console.error('API Error:', error);
+        return { status: 0, data: { erreur: 'Erreur de connexion au serveur' } };
+    }
 }
 async function apiPut(path, data) {
     const res = await fetch(API_BASE + path, {

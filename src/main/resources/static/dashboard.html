@@ -1,212 +1,301 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mon espace — Beledi</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
-<style>
-* { font-family: 'Inter', sans-serif; }
-.tab-btn { border-bottom: 3px solid transparent; transition: all 0.2s; color:#64748b; font-weight:600; padding:12px 4px; }
-.tab-btn.active { border-bottom-color:#2563eb; color:#2563eb; }
-.tab-content { display:none; }
-.tab-content.active { display:block; }
-.input-field {
-  width:100%; padding:11px 16px; border:2px solid #e2e8f0; border-radius:12px;
-  font-size:14px; transition:all 0.2s; outline:none; background:#fafafa;
-}
-.input-field:focus { border-color:#2563eb; background:white; box-shadow:0 0 0 4px rgba(37,99,235,0.08); }
-select.input-field { cursor:pointer; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-.fade-up { animation: fadeUp 0.4s ease forwards; opacity:0; }
-.card-hover { transition: transform 0.2s, box-shadow 0.2s; }
-.card-hover:hover { transform:translateY(-3px); box-shadow:0 16px 32px -8px rgba(0,0,0,0.1); }
-#pickMap { height:280px; border-radius:16px; overflow:hidden; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mon espace — Beledi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } } }</script>
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .tab-btn {
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+      color: #64748b;
+      font-weight: 600;
+      padding: 12px 4px;
+    }
+
+    .tab-btn.active {
+      border-bottom-color: #2563eb;
+      color: #2563eb;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 11px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 14px;
+      transition: all 0.2s;
+      outline: none;
+      background: #fafafa;
+    }
+
+    .input-field:focus {
+      border-color: #2563eb;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+    }
+
+    select.input-field {
+      cursor: pointer;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .fade-up {
+      animation: fadeUp 0.4s ease forwards;
+      opacity: 0;
+    }
+
+    .card-hover {
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.1);
+    }
+
+    #pickMap {
+      height: 280px;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+  </style>
 </head>
+
 <body class="bg-gray-50 min-h-screen">
 
-<div id="navContainer"></div>
+  <div id="navContainer"></div>
 
-<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-  <!-- Header -->
-  <div class="mb-8 fade-up">
-    <h1 class="text-3xl font-black text-gray-900">Mon espace <span id="helloName" class="text-blue-600"></span></h1>
-    <p class="text-gray-500 mt-1">Gérez vos signalements et contribuez à l'amélioration de votre ville</p>
-  </div>
-
-  <!-- Tabs -->
-  <div class="border-b border-gray-200 mb-8 fade-up" style="animation-delay:0.05s">
-    <div class="flex gap-8">
-      <button class="tab-btn active" onclick="showTab('mes',this)">
-        <i class="fas fa-list mr-2"></i>Mes signalements
-        <span id="countBadge" class="ml-2 bg-blue-100 text-blue-600 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
-      </button>
-      <button class="tab-btn" onclick="showTab('nouveau',this)">
-        <i class="fas fa-plus mr-2"></i>Nouveau signalement
-      </button>
+    <!-- Header -->
+    <div class="mb-8 fade-up">
+      <h1 class="text-3xl font-black text-gray-900">Mon espace <span id="helloName" class="text-blue-600"></span></h1>
+      <p class="text-gray-500 mt-1">Gérez vos signalements et contribuez à l'amélioration de votre ville</p>
     </div>
-  </div>
 
-  <!-- TAB: MES SIGNALEMENTS -->
-  <div id="tab-mes" class="tab-content active">
-    <div id="mesList" class="space-y-4">
-      <!-- skeleton -->
-      <div class="bg-white rounded-2xl p-6 shadow-sm animate-pulse"><div class="h-5 bg-gray-200 rounded w-2/3 mb-3"></div><div class="h-3 bg-gray-100 rounded w-full mb-2"></div><div class="h-3 bg-gray-100 rounded w-1/2"></div></div>
-      <div class="bg-white rounded-2xl p-6 shadow-sm animate-pulse"><div class="h-5 bg-gray-200 rounded w-2/3 mb-3"></div><div class="h-3 bg-gray-100 rounded w-full mb-2"></div><div class="h-3 bg-gray-100 rounded w-1/2"></div></div>
-    </div>
-  </div>
-
-  <!-- TAB: NOUVEAU SIGNALEMENT -->
-  <div id="tab-nouveau" class="tab-content">
-    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden fade-up">
-      <!-- Card header -->
-      <div class="bg-gradient-to-r from-blue-600 to-cyan-500 px-8 py-6">
-        <h2 class="text-xl font-bold text-white"><i class="fas fa-plus-circle mr-2"></i>Créer un signalement</h2>
-        <p class="text-white/70 text-sm mt-1">Décrivez le problème que vous observez dans votre quartier</p>
-      </div>
-
-      <div class="p-8">
-        <!-- Alert -->
-        <div id="formOk" class="hidden flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl mb-6 text-sm">
-          <i class="fas fa-check-circle text-emerald-500"></i>
-          <span>Signalement créé avec succès !</span>
-        </div>
-        <div id="formErr" class="hidden flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 text-sm">
-          <i class="fas fa-exclamation-circle text-red-500"></i>
-          <span id="formErrText"></span>
-        </div>
-
-        <form id="signalementForm" class="space-y-6">
-          <!-- Titre -->
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Titre du signalement <span class="text-red-500">*</span></label>
-            <input type="text" id="titre" class="input-field" placeholder="Ex: Nid-de-poule dangereux rue principale" required minlength="5">
-          </div>
-
-          <!-- Description -->
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Description <span class="text-red-500">*</span></label>
-            <textarea id="description" class="input-field resize-none" rows="4" placeholder="Décrivez le problème en détail : localisation précise, impact sur les habitants, urgence…" required minlength="10" style="padding:12px 16px"></textarea>
-          </div>
-
-          <!-- Catégorie -->
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Catégorie <span class="text-red-500">*</span></label>
-            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
-              <label class="cat-radio cursor-pointer" data-val="VOIRIE">
-                <input type="radio" name="categorie" value="VOIRIE" class="sr-only" required>
-                <div class="cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-purple-400 transition-all">
-                  <i class="fas fa-road text-2xl text-purple-500 mb-2 block"></i>
-                  <span class="text-xs font-semibold text-gray-700">Voirie</span>
-                </div>
-              </label>
-              <label class="cat-radio cursor-pointer" data-val="ELECTRICITE">
-                <input type="radio" name="categorie" value="ELECTRICITE" class="sr-only">
-                <div class="cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-yellow-400 transition-all">
-                  <i class="fas fa-bolt text-2xl text-yellow-500 mb-2 block"></i>
-                  <span class="text-xs font-semibold text-gray-700">Électricité</span>
-                </div>
-              </label>
-              <label class="cat-radio cursor-pointer" data-val="DECHETS">
-                <input type="radio" name="categorie" value="DECHETS" class="sr-only">
-                <div class="cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-green-400 transition-all">
-                  <i class="fas fa-trash text-2xl text-green-500 mb-2 block"></i>
-                  <span class="text-xs font-semibold text-gray-700">Déchets</span>
-                </div>
-              </label>
-              <label class="cat-radio cursor-pointer" data-val="EAU">
-                <input type="radio" name="categorie" value="EAU" class="sr-only">
-                <div class="cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-sky-400 transition-all">
-                  <i class="fas fa-tint text-2xl text-sky-500 mb-2 block"></i>
-                  <span class="text-xs font-semibold text-gray-700">Eau</span>
-                </div>
-              </label>
-              <label class="cat-radio cursor-pointer" data-val="AUTRE">
-                <input type="radio" name="categorie" value="AUTRE" class="sr-only">
-                <div class="cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-gray-400 transition-all">
-                  <i class="fas fa-ellipsis-h text-2xl text-gray-400 mb-2 block"></i>
-                  <span class="text-xs font-semibold text-gray-700">Autre</span>
-                </div>
-              </label>
-            </div>
-          </div>
-
-          <!-- Location -->
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">
-              Localisation <span class="text-red-500">*</span>
-              <span class="ml-2 text-xs font-normal text-gray-400">Cliquez sur la carte pour placer le marqueur</span>
-            </label>
-            <div id="pickMap" class="mb-3 ring-2 ring-gray-200 rounded-2xl"></div>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="text-xs text-gray-500 font-medium">Latitude</label>
-                <input type="number" id="lat" class="input-field text-sm" step="0.0001" placeholder="18.0785" required>
-              </div>
-              <div>
-                <label class="text-xs text-gray-500 font-medium">Longitude</label>
-                <input type="number" id="lng" class="input-field text-sm" step="0.0001" placeholder="-15.9654" required>
-              </div>
-            </div>
-          </div>
-
-          <!-- Photo URL (optional) -->
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">
-              URL de la photo <span class="text-gray-400 font-normal">(optionnel)</span>
-            </label>
-            <div class="relative">
-              <i class="fas fa-image absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-              <input type="url" id="photoUrl" class="input-field" style="padding-left:44px" placeholder="https://exemple.com/photo.jpg">
-            </div>
-          </div>
-
-          <!-- Submit -->
-          <button type="submit" id="submitBtn"
-                  class="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold py-4 rounded-xl hover:opacity-90 hover:-translate-y-0.5 transition-all duration-200 shadow-lg shadow-blue-200 flex items-center justify-center gap-2 text-base">
-            <i class="fas fa-paper-plane"></i>Envoyer le signalement
-          </button>
-        </form>
+    <!-- Tabs -->
+    <div class="border-b border-gray-200 mb-8 fade-up" style="animation-delay:0.05s">
+      <div class="flex gap-8">
+        <button class="tab-btn active" onclick="showTab('mes',this)">
+          <i class="fas fa-list mr-2"></i>Mes signalements
+          <span id="countBadge"
+            class="ml-2 bg-blue-100 text-blue-600 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+        </button>
+        <button class="tab-btn" onclick="showTab('nouveau',this)">
+          <i class="fas fa-plus mr-2"></i>Nouveau signalement
+        </button>
       </div>
     </div>
+
+    <!-- TAB: MES SIGNALEMENTS -->
+    <div id="tab-mes" class="tab-content active">
+      <div id="mesList" class="space-y-4">
+        <!-- skeleton -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm animate-pulse">
+          <div class="h-5 bg-gray-200 rounded w-2/3 mb-3"></div>
+          <div class="h-3 bg-gray-100 rounded w-full mb-2"></div>
+          <div class="h-3 bg-gray-100 rounded w-1/2"></div>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm animate-pulse">
+          <div class="h-5 bg-gray-200 rounded w-2/3 mb-3"></div>
+          <div class="h-3 bg-gray-100 rounded w-full mb-2"></div>
+          <div class="h-3 bg-gray-100 rounded w-1/2"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: NOUVEAU SIGNALEMENT -->
+    <div id="tab-nouveau" class="tab-content">
+      <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden fade-up">
+        <!-- Card header -->
+        <div class="bg-gradient-to-r from-blue-600 to-cyan-500 px-8 py-6">
+          <h2 class="text-xl font-bold text-white"><i class="fas fa-plus-circle mr-2"></i>Créer un signalement</h2>
+          <p class="text-white/70 text-sm mt-1">Décrivez le problème que vous observez dans votre quartier</p>
+        </div>
+
+        <div class="p-8">
+          <!-- Alert -->
+          <div id="formOk"
+            class="hidden flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl mb-6 text-sm">
+            <i class="fas fa-check-circle text-emerald-500"></i>
+            <span>Signalement créé avec succès !</span>
+          </div>
+          <div id="formErr"
+            class="hidden flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 text-sm">
+            <i class="fas fa-exclamation-circle text-red-500"></i>
+            <span id="formErrText"></span>
+          </div>
+
+          <form id="signalementForm" class="space-y-6">
+            <!-- Titre -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Titre du signalement <span
+                  class="text-red-500">*</span></label>
+              <input type="text" id="titre" class="input-field" placeholder="Ex: Nid-de-poule dangereux rue principale"
+                required minlength="5">
+            </div>
+
+            <!-- Description -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Description <span
+                  class="text-red-500">*</span></label>
+              <textarea id="description" class="input-field resize-none" rows="4"
+                placeholder="Décrivez le problème en détail : localisation précise, impact sur les habitants, urgence…"
+                required minlength="10" style="padding:12px 16px"></textarea>
+            </div>
+
+            <!-- Catégorie -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Catégorie <span
+                  class="text-red-500">*</span></label>
+              <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                <label class="cat-radio cursor-pointer" data-val="VOIRIE">
+                  <input type="radio" name="categorie" value="VOIRIE" class="sr-only" required>
+                  <div
+                    class="cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-purple-400 transition-all">
+                    <i class="fas fa-road text-2xl text-purple-500 mb-2 block"></i>
+                    <span class="text-xs font-semibold text-gray-700">Voirie</span>
+                  </div>
+                </label>
+                <label class="cat-radio cursor-pointer" data-val="ELECTRICITE">
+                  <input type="radio" name="categorie" value="ELECTRICITE" class="sr-only">
+                  <div
+                    class="cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-yellow-400 transition-all">
+                    <i class="fas fa-bolt text-2xl text-yellow-500 mb-2 block"></i>
+                    <span class="text-xs font-semibold text-gray-700">Électricité</span>
+                  </div>
+                </label>
+                <label class="cat-radio cursor-pointer" data-val="DECHETS">
+                  <input type="radio" name="categorie" value="DECHETS" class="sr-only">
+                  <div
+                    class="cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-green-400 transition-all">
+                    <i class="fas fa-trash text-2xl text-green-500 mb-2 block"></i>
+                    <span class="text-xs font-semibold text-gray-700">Déchets</span>
+                  </div>
+                </label>
+                <label class="cat-radio cursor-pointer" data-val="EAU">
+                  <input type="radio" name="categorie" value="EAU" class="sr-only">
+                  <div
+                    class="cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-sky-400 transition-all">
+                    <i class="fas fa-tint text-2xl text-sky-500 mb-2 block"></i>
+                    <span class="text-xs font-semibold text-gray-700">Eau</span>
+                  </div>
+                </label>
+                <label class="cat-radio cursor-pointer" data-val="AUTRE">
+                  <input type="radio" name="categorie" value="AUTRE" class="sr-only">
+                  <div
+                    class="cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-gray-400 transition-all">
+                    <i class="fas fa-ellipsis-h text-2xl text-gray-400 mb-2 block"></i>
+                    <span class="text-xs font-semibold text-gray-700">Autre</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Location -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                Localisation <span class="text-red-500">*</span>
+                <span class="ml-2 text-xs font-normal text-gray-400">Cliquez sur la carte pour placer le marqueur</span>
+              </label>
+              <div id="pickMap" class="mb-3 ring-2 ring-gray-200 rounded-2xl"></div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs text-gray-500 font-medium">Latitude</label>
+                  <input type="number" id="lat" class="input-field text-sm" step="0.000001" placeholder="18.0785"
+                    required>
+                </div>
+                <div>
+                  <label class="text-xs text-gray-500 font-medium">Longitude</label>
+                  <input type="number" id="lng" class="input-field text-sm" step="0.000001" placeholder="-15.9654"
+                    required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Photo URL (optional) -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                URL de la photo <span class="text-gray-400 font-normal">(optionnel)</span>
+              </label>
+              <div class="relative">
+                <i class="fas fa-image absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                <input type="url" id="photoUrl" class="input-field" style="padding-left:44px"
+                  placeholder="https://exemple.com/photo.jpg">
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" id="submitBtn"
+              class="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold py-4 rounded-xl hover:opacity-90 hover:-translate-y-0.5 transition-all duration-200 shadow-lg shadow-blue-200 flex items-center justify-center gap-2 text-base">
+              <i class="fas fa-paper-plane"></i>Envoyer le signalement
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-</div>
+  <script src="/js/utils.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    if (!requireAuth()) throw '';
+    const user = getUser();
+    if (user.role === 'ADMIN') window.location.href = '/admin.html';
 
-<script src="/js/utils.js"></script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-if (!requireAuth()) throw '';
-const user = getUser();
-if (user.role === 'ADMIN') window.location.href = '/admin.html';
+    document.getElementById('navContainer').innerHTML = renderNavbar();
+    document.getElementById('helloName').textContent = user.nom.split(' ')[0] + ' 👋';
 
-document.getElementById('navContainer').innerHTML = renderNavbar();
-document.getElementById('helloName').textContent = user.nom.split(' ')[0] + ' 👋';
+    // ── Tabs ─────────────────────────────────────────────────────────────────────
+    let mapInitialized = false;
+    function showTab(id, btn) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      btn.classList.add('active');
+      if (id === 'nouveau' && !mapInitialized) { initPickMap(); mapInitialized = true; }
+    }
 
-// ── Tabs ─────────────────────────────────────────────────────────────────────
-let mapInitialized = false;
-function showTab(id, btn) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  btn.classList.add('active');
-  if (id === 'nouveau' && !mapInitialized) { initPickMap(); mapInitialized = true; }
-}
-
-// ── Load my signalements ─────────────────────────────────────────────────────
-async function loadMes() {
-  const data = await apiGet('/signalements/mes');
-  if (!data) return;
-  document.getElementById('countBadge').textContent = data.length;
-  const el = document.getElementById('mesList');
-  if (!data.length) {
-    el.innerHTML = `
+    // ── Load my signalements ─────────────────────────────────────────────────────
+    async function loadMes() {
+      const data = await apiGet('/signalements/mes');
+      if (!data) return;
+      document.getElementById('countBadge').textContent = data.length;
+      const el = document.getElementById('mesList');
+      if (!data.length) {
+        el.innerHTML = `
       <div class="text-center py-16 text-gray-400">
         <i class="fas fa-inbox text-6xl mb-4 opacity-30"></i>
         <p class="text-lg font-medium">Aucun signalement pour l'instant</p>
@@ -215,10 +304,10 @@ async function loadMes() {
           <i class="fas fa-plus"></i>Créer un signalement
         </button>
       </div>`;
-    return;
-  }
-  el.innerHTML = data.map((s,i) => `
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm card-hover overflow-hidden fade-up" style="animation-delay:${i*50}ms">
+        return;
+      }
+      el.innerHTML = data.map((s, i) => `
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm card-hover overflow-hidden fade-up" style="animation-delay:${i * 50}ms">
       <div class="p-6">
         <div class="flex items-start gap-3">
           <div class="flex-1 min-w-0">
@@ -237,87 +326,112 @@ async function loadMes() {
       </div>
     </div>
   `).join('');
-}
-
-// ── Category radio cards ──────────────────────────────────────────────────────
-const catColors = { VOIRIE:'border-purple-500 bg-purple-50', ELECTRICITE:'border-yellow-500 bg-yellow-50',
-                    DECHETS:'border-green-500 bg-green-50', EAU:'border-sky-500 bg-sky-50', AUTRE:'border-gray-400 bg-gray-50' };
-document.querySelectorAll('.cat-radio').forEach(label => {
-  label.querySelector('input').addEventListener('change', () => {
-    document.querySelectorAll('.cat-radio .cat-card').forEach(c => { c.className = 'cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-gray-300 transition-all'; });
-    const val = label.dataset.val;
-    label.querySelector('.cat-card').className = `cat-card border-2 ${catColors[val]} rounded-2xl p-3 text-center transition-all`;
-  });
-});
-
-// ── Map picker ─────────────────────────────────────────────────────────────────
-let pickMap, pickMarker;
-function initPickMap() {
-  pickMap = L.map('pickMap').setView([18.08, -15.97], 12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19 }).addTo(pickMap);
-  pickMap.on('click', e => {
-    const {lat, lng} = e.latlng;
-    document.getElementById('lat').value = lat.toFixed(6);
-    document.getElementById('lng').value = lng.toFixed(6);
-    if (pickMarker) pickMarker.setLatLng(e.latlng);
-    else {
-      pickMarker = L.marker(e.latlng, {
-        icon: L.divIcon({
-          html:'<div style="width:18px;height:18px;background:#2563eb;border:3px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(37,99,235,0.5)"></div>',
-          iconSize:[18,18], iconAnchor:[9,9], className:''
-        })
-      }).addTo(pickMap);
     }
-  });
-}
 
-// ── Form submit ───────────────────────────────────────────────────────────────
-document.getElementById('signalementForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  document.getElementById('formOk').classList.add('hidden');
-  document.getElementById('formErr').classList.add('hidden');
+    // ── Category radio cards ──────────────────────────────────────────────────────
+    const catColors = {
+      VOIRIE: 'border-purple-500 bg-purple-50', ELECTRICITE: 'border-yellow-500 bg-yellow-50',
+      DECHETS: 'border-green-500 bg-green-50', EAU: 'border-sky-500 bg-sky-50', AUTRE: 'border-gray-400 bg-gray-50'
+    };
+    document.querySelectorAll('.cat-radio').forEach(label => {
+      label.querySelector('input').addEventListener('change', () => {
+        document.querySelectorAll('.cat-radio .cat-card').forEach(c => { c.className = 'cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-gray-300 transition-all'; });
+        const val = label.dataset.val;
+        label.querySelector('.cat-card').className = `cat-card border-2 ${catColors[val]} rounded-2xl p-3 text-center transition-all`;
+      });
+    });
 
-  const cat = document.querySelector('input[name="categorie"]:checked')?.value;
-  if (!cat) { showFormErr('Veuillez sélectionner une catégorie.'); return; }
+    // ── Map picker ─────────────────────────────────────────────────────────────────
+    let pickMap, pickMarker;
+    function initPickMap() {
+      pickMap = L.map('pickMap').setView([18.08, -15.97], 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(pickMap);
+      pickMap.on('click', e => {
+        const { lat, lng } = e.latlng;
+        document.getElementById('lat').value = lat.toFixed(6);
+        document.getElementById('lng').value = lng.toFixed(6);
+        if (pickMarker) pickMarker.setLatLng(e.latlng);
+        else {
+          pickMarker = L.marker(e.latlng, {
+            icon: L.divIcon({
+              html: '<div style="width:18px;height:18px;background:#2563eb;border:3px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(37,99,235,0.5)"></div>',
+              iconSize: [18, 18], iconAnchor: [9, 9], className: ''
+            })
+          }).addTo(pickMap);
+        }
+      });
+    }
 
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Envoi en cours…';
+    // ── Form submit ───────────────────────────────────────────────────────────────
+    document.getElementById('signalementForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      document.getElementById('formOk').classList.add('hidden');
+      document.getElementById('formErr').classList.add('hidden');
 
-  const payload = {
-    titre: document.getElementById('titre').value.trim(),
-    description: document.getElementById('description').value.trim(),
-    categorie: cat,
-    latitude: parseFloat(document.getElementById('lat').value),
-    longitude: parseFloat(document.getElementById('lng').value),
-    photoUrl: document.getElementById('photoUrl').value.trim() || null
-  };
+      // Check if user is authenticated
+      const token = getToken();
+      if (!token || isTokenExpired(token)) {
+        showFormErr('Votre session a expiré. Veuillez vous reconnecter.');
+        setTimeout(() => { window.location.href = '/login.html'; }, 2000);
+        return;
+      }
 
-  const res = await apiPost('/signalements', payload);
-  if (res.status === 200) {
-    document.getElementById('formOk').classList.remove('hidden');
-    document.getElementById('formOk').classList.add('flex');
-    document.getElementById('signalementForm').reset();
-    document.querySelectorAll('.cat-card').forEach(c => { c.className = 'cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-gray-300 transition-all'; });
-    if (pickMarker) { pickMap.removeLayer(pickMarker); pickMarker = null; }
+      const cat = document.querySelector('input[name="categorie"]:checked')?.value;
+      if (!cat) { showFormErr('Veuillez sélectionner une catégorie.'); return; }
+
+      const latValue = document.getElementById('lat').value.trim();
+      const lngValue = document.getElementById('lng').value.trim();
+      if (!latValue || !lngValue) { showFormErr('Veuillez sélectionner un emplacement sur la carte.'); return; }
+
+      const lat = parseFloat(latValue);
+      const lng = parseFloat(lngValue);
+      if (isNaN(lat) || isNaN(lng)) { showFormErr('Coordonnées invalides. Veuillez resélectionner l\'emplacement.'); return; }
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Envoi en cours…';
+
+      const payload = {
+        titre: document.getElementById('titre').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        categorie: cat,
+        latitude: lat,
+        longitude: lng,
+        photoUrl: document.getElementById('photoUrl').value.trim() || null
+      };
+
+      try {
+        const res = await apiPost('/signalements', payload);
+        if (res.status === 200) {
+          document.getElementById('formOk').classList.remove('hidden');
+          document.getElementById('formOk').classList.add('flex');
+          document.getElementById('signalementForm').reset();
+          document.querySelectorAll('.cat-card').forEach(c => { c.className = 'cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-gray-300 transition-all'; });
+          if (pickMarker) { pickMap.removeLayer(pickMarker); pickMarker = null; }
+          loadMes();
+          setTimeout(() => {
+            document.querySelector('.tab-btn').click();
+          }, 1500);
+        } else {
+          showFormErr(res.data.erreur || 'Une erreur est survenue.');
+        }
+      } catch (error) {
+        console.error('Form submission error:', error);
+        showFormErr('Erreur de connexion. Veuillez réessayer.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i>Envoyer le signalement';
+      }
+    });
+
+    function showFormErr(msg) {
+      const el = document.getElementById('formErr');
+      document.getElementById('formErrText').textContent = msg;
+      el.classList.remove('hidden'); el.classList.add('flex');
+    }
+
     loadMes();
-    setTimeout(() => {
-      document.querySelector('.tab-btn').click();
-    }, 1500);
-  } else {
-    showFormErr(res.data.erreur || 'Une erreur est survenue.');
-  }
-  btn.disabled = false;
-  btn.innerHTML = '<i class="fas fa-paper-plane"></i>Envoyer le signalement';
-});
-
-function showFormErr(msg) {
-  const el = document.getElementById('formErr');
-  document.getElementById('formErrText').textContent = msg;
-  el.classList.remove('hidden'); el.classList.add('flex');
-}
-
-loadMes();
-</script>
+  </script>
 </body>
+
 </html>

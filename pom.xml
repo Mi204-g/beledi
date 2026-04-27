@@ -56,13 +56,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Driver PostgreSQL : permet à Java de parler avec PostgreSQL/Supabase -->
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
         <!-- JWT API : interface pour créer/lire les tokens JWT -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
