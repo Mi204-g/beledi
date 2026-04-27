@@ -64,27 +64,32 @@ public class JwtFilter extends OncePerRequestFilter {
         // - aucune authentification n'est déjà en cours pour cette requête
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            // Charge les détails de l'utilisateur depuis la base de données
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            try {
+                // Charge les détails de l'utilisateur depuis la base de données
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-            // Valide le token (vérifie email + expiration)
-            if (jwtUtil.validateToken(token, userDetails)) {
+                // Valide le token (vérifie email + expiration)
+                if (jwtUtil.validateToken(token, userDetails)) {
 
-                // Crée l'objet d'authentification Spring Security
-                // null = pas de credentials (mot de passe) car on fait confiance au JWT
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities() // ROLE_CITOYEN ou ROLE_ADMIN
-                        );
+                    // Crée l'objet d'authentification Spring Security
+                    // null = pas de credentials (mot de passe) car on fait confiance au JWT
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities() // ROLE_CITOYEN ou ROLE_ADMIN
+                            );
 
-                // Ajoute les détails de la requête HTTP (IP, session...)
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    // Ajoute les détails de la requête HTTP (IP, session...)
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // Enregistre l'authentification dans le contexte de sécurité
-                // → Spring Security sait maintenant qui fait la requête
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                    // Enregistre l'authentification dans le contexte de sécurité
+                    // → Spring Security sait maintenant qui fait la requête
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            } catch (Exception e) {
+                // L'utilisateur n'existe plus en base (ex: base H2 redémarrée)
+                logger.warn("Utilisateur introuvable ou erreur de token : " + e.getMessage());
             }
         }
 
