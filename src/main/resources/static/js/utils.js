@@ -106,38 +106,38 @@ function renderNavbar(activePage = '') {
         { href:'/#carte', label:'Carte', id:'carte' },
     ];
     const navLinks = links.map(l =>
-        `<a href="${l.href}" class="font-medium transition-colors hover:text-sky-600 ${activePage===l.id?'text-sky-600':'text-sky-800'}">${l.label}</a>`
+        `<a href="${l.href}" class="font-medium transition-colors hover:text-blue-500 ${activePage===l.id?'text-blue-500':'text-gray-600'}">${l.label}</a>`
     ).join('');
 
     let authSection;
     if (user) {
         const dashHref = user.role === 'ADMIN' ? '/admin.html' : '/dashboard.html';
         authSection = `
-            <a href="${dashHref}" class="flex items-center gap-2 text-sky-800 hover:text-sky-600 font-medium transition-colors">
-                <span class="w-8 h-8 rounded-full bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center text-white text-sm font-bold">
+            <a href="${dashHref}" class="flex items-center gap-2 text-gray-700 hover:text-blue-500 font-medium transition-colors">
+                <span class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-bold">
                     ${user.nom.charAt(0).toUpperCase()}
                 </span>
                 <span class="hidden sm:block">${user.nom.split(' ')[0]}</span>
             </a>
-            <button onclick="logout()" class="flex items-center gap-2 text-sm font-medium text-sky-600 hover:text-red-500 transition-colors px-3 py-2 rounded-xl hover:bg-red-50">
+            <button onclick="logout()" class="flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-red-500 transition-colors px-3 py-2 rounded-lg hover:bg-red-50">
                 <i class="fas fa-sign-out-alt"></i><span class="hidden sm:block">Déconnexion</span>
             </button>`;
     } else {
         authSection = `
-            <a href="/login.html" class="text-sky-800 hover:text-sky-600 font-medium transition-colors">Se connecter</a>
-            <a href="/register.html" class="bg-gradient-to-r from-sky-600 to-sky-400 text-white font-semibold px-5 py-2.5 rounded-xl hover:shadow-lg hover:shadow-sky-200 transition-all duration-200 hover:-translate-y-0.5">
+            <a href="/login.html" class="text-gray-600 hover:text-blue-500 font-medium transition-colors">Se connecter</a>
+            <a href="/register.html" class="bg-blue-500 text-white font-semibold px-5 py-2 rounded-xl hover:bg-blue-600 transition-colors">
                 <i class="fas fa-user-plus mr-1.5"></i>S'inscrire
             </a>`;
     }
     return `
-    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-sky-100 shadow-sm">
+    <nav class="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <a href="/" class="flex items-center gap-2.5 group">
-                    <div class="w-9 h-9 bg-gradient-to-br from-sky-600 to-sky-400 rounded-xl flex items-center justify-center shadow-md shadow-sky-200 group-hover:scale-105 transition-transform">
+                    <div class="w-9 h-9 bg-blue-500 rounded-xl flex items-center justify-center group-hover:bg-blue-600 transition-colors">
                         <i class="fas fa-city text-white text-sm"></i>
                     </div>
-                    <span class="text-xl font-black bg-gradient-to-r from-sky-600 to-sky-400 bg-clip-text text-transparent">BELEDI</span>
+                    <span class="text-xl font-black text-gray-900">BELEDI</span>
                 </a>
                 <div class="hidden md:flex items-center gap-6">${navLinks}</div>
                 <div class="flex items-center gap-3">${authSection}</div>

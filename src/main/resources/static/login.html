@@ -10,94 +10,94 @@
 <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
 <style>
 * { font-family: 'Inter', sans-serif; }
-.page-gradient { background: linear-gradient(135deg, #000000 0%, #1e3a8a 45%, #000000 80%, #1e3a8a 100%); min-height:100vh; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-.fade-up { animation: fadeUp 0.45s ease forwards; }
+.fade-up { animation: fadeUp 0.4s ease forwards; }
 .input-field {
-  width:100%; padding:12px 12px 12px 44px; border:2px solid #e2e8f0; border-radius:12px;
-  font-size:15px; transition:all 0.2s; outline:none; background:#fafafa;
+  width:100%; padding:12px 12px 12px 44px; border:1.5px solid #e5e7eb; border-radius:12px;
+  font-size:15px; transition:all 0.2s; outline:none; background:#fafafa; color:#111827;
 }
-.input-field:focus { border-color:#2563eb; background:white; box-shadow:0 0 0 4px rgba(37,99,235,0.08); }
+.input-field:focus { border-color:#3b82f6; background:white; box-shadow:0 0 0 3px rgba(59,130,246,0.1); }
 </style>
 </head>
-<body class="page-gradient flex items-center justify-center p-4">
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
 
 <!-- Back -->
-<a href="/" class="fixed top-6 left-6 flex items-center gap-2 text-white/80 hover:text-white font-medium transition-colors bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl backdrop-blur-sm">
+<a href="/" class="fixed top-5 left-5 flex items-center gap-2 text-gray-500 hover:text-gray-800 font-medium transition-colors bg-white border border-gray-200 hover:border-gray-300 px-4 py-2 rounded-xl shadow-sm text-sm">
   <i class="fas fa-arrow-left"></i>Accueil
 </a>
 
 <div class="w-full max-w-md fade-up">
-  <!-- Logo card top -->
+
+  <!-- Logo -->
   <div class="text-center mb-8">
-    <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl">
-      <i class="fas fa-city text-white text-2xl"></i>
+    <div class="w-14 h-14 bg-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md shadow-blue-200">
+      <i class="fas fa-city text-white text-xl"></i>
     </div>
-    <h1 class="text-3xl font-black text-white">BELEDI</h1>
-    <p class="text-white/65 mt-1">Connexion à votre compte</p>
+    <h1 class="text-2xl font-black text-gray-900">BELEDI</h1>
+    <p class="text-gray-400 text-sm mt-1">Connexion à votre compte</p>
   </div>
 
-  <!-- Form card -->
-  <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
-    <div class="p-8">
-      <!-- Error alert -->
-      <div id="alertErr" class="hidden flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 text-sm">
-        <i class="fas fa-exclamation-circle text-red-500 flex-shrink-0"></i>
-        <span id="alertErrText"></span>
+  <!-- Card -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+
+    <!-- Error -->
+    <div id="alertErr" class="hidden flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 text-sm">
+      <i class="fas fa-exclamation-circle text-red-500 flex-shrink-0"></i>
+      <span id="alertErrText"></span>
+    </div>
+
+    <form id="loginForm" class="space-y-5" novalidate>
+
+      <!-- Email -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Adresse email</label>
+        <div class="relative">
+          <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
+          <input type="email" id="email" class="input-field" placeholder="votre@email.com">
+        </div>
       </div>
 
-      <form id="loginForm" class="space-y-5">
-        <!-- Email -->
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">Adresse email</label>
-          <div class="relative">
-            <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-            <input type="email" id="email" class="input-field" placeholder="votre@email.com" required>
-          </div>
+      <!-- Password -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Mot de passe</label>
+        <div class="relative">
+          <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
+          <input type="password" id="motDePasse" class="input-field" placeholder="••••••••">
+          <button type="button" onclick="togglePwd()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors">
+            <i class="fas fa-eye" id="eyeIcon"></i>
+          </button>
         </div>
+      </div>
 
-        <!-- Password -->
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">Mot de passe</label>
-          <div class="relative">
-            <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-            <input type="password" id="motDePasse" class="input-field" placeholder="••••••••" required>
-            <button type="button" onclick="togglePwd()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
-              <i class="fas fa-eye" id="eyeIcon"></i>
-            </button>
-          </div>
-        </div>
+      <!-- Submit -->
+      <button type="submit" id="submitBtn"
+              class="w-full bg-blue-500 text-white font-bold py-3.5 rounded-xl hover:bg-blue-600 hover:-translate-y-0.5 transition-all duration-200 shadow-sm shadow-blue-200 flex items-center justify-center gap-2 text-base mt-1">
+        <i class="fas fa-sign-in-alt"></i>Se connecter
+      </button>
+    </form>
 
-        <!-- Submit -->
-        <button type="submit" id="submitBtn"
-                class="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold py-3.5 rounded-xl hover:opacity-90 hover:-translate-y-0.5 transition-all duration-200 shadow-lg shadow-blue-200 flex items-center justify-center gap-2 text-base mt-2">
-          <i class="fas fa-sign-in-alt"></i>Se connecter
+    <div class="relative my-5">
+      <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
+      <div class="relative text-center"><span class="bg-white px-4 text-gray-300 text-sm">ou</span></div>
+    </div>
+
+    <p class="text-center text-gray-400 text-sm mb-5">
+      Pas encore de compte ?
+      <a href="/register.html" class="text-blue-500 font-semibold hover:text-blue-600 ml-1">Créer un compte</a>
+    </p>
+
+    <!-- Demo credentials -->
+    <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
+      <p class="text-blue-600 text-xs font-semibold mb-2"><i class="fas fa-info-circle mr-1"></i>Comptes de démonstration</p>
+      <div class="space-y-1.5">
+        <button onclick="fillDemo('admin@baladi.mr','admin123')" class="w-full text-left text-xs bg-white hover:bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 transition-colors flex items-center justify-between group">
+          <span><span class="font-semibold text-blue-600">Admin</span> — admin@baladi.mr</span>
+          <span class="text-gray-400 group-hover:text-blue-500 font-mono">admin123</span>
         </button>
-      </form>
-
-      <div class="relative my-6">
-        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
-        <div class="relative text-center"><span class="bg-white px-4 text-gray-400 text-sm">ou</span></div>
-      </div>
-
-      <p class="text-center text-gray-500 text-sm">
-        Pas encore de compte ?
-        <a href="/register.html" class="text-blue-600 font-semibold hover:text-blue-700 hover:underline ml-1">Créer un compte</a>
-      </p>
-
-      <!-- Demo credentials -->
-      <div class="mt-6 bg-blue-50 rounded-2xl p-4 border border-blue-100">
-        <p class="text-blue-700 text-xs font-semibold mb-2"><i class="fas fa-info-circle mr-1"></i>Comptes de démonstration</p>
-        <div class="space-y-1.5">
-          <button onclick="fillDemo('admin@beledi.mr','admin123')" class="w-full text-left text-xs bg-white hover:bg-blue-50 border border-blue-200 rounded-xl px-3 py-2 transition-colors flex items-center justify-between group">
-            <span><span class="font-semibold text-blue-700">Admin</span> — admin@beledi.mr</span>
-            <span class="text-blue-400 group-hover:text-blue-600 font-mono">admin123</span>
-          </button>
-          <button onclick="fillDemo('ahmed@beledi.mr','citoyen123')" class="w-full text-left text-xs bg-white hover:bg-blue-50 border border-blue-200 rounded-xl px-3 py-2 transition-colors flex items-center justify-between group">
-            <span><span class="font-semibold text-gray-700">Citoyen</span> — ahmed@beledi.mr</span>
-            <span class="text-blue-400 group-hover:text-blue-600 font-mono">citoyen123</span>
-          </button>
-        </div>
+        <button onclick="fillDemo('ahmed@baladi.mr','citoyen123')" class="w-full text-left text-xs bg-white hover:bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 transition-colors flex items-center justify-between group">
+          <span><span class="font-semibold text-gray-600">Citoyen</span> — ahmed@baladi.mr</span>
+          <span class="text-gray-400 group-hover:text-blue-500 font-mono">citoyen123</span>
+        </button>
       </div>
     </div>
   </div>
@@ -105,19 +105,20 @@
 
 <script src="/js/utils.js"></script>
 <script>
-// Redirect if already logged in
 if (getToken()) window.location.href = getUser()?.role==='ADMIN' ? '/admin.html' : '/dashboard.html';
 
 function togglePwd() {
   const inp = document.getElementById('motDePasse');
   const ico = document.getElementById('eyeIcon');
-  if (inp.type==='password') { inp.type='text';  ico.className='fas fa-eye-slash'; }
-  else                       { inp.type='password'; ico.className='fas fa-eye'; }
+  if (inp.type==='password') { inp.type='text'; ico.className='fas fa-eye-slash'; }
+  else { inp.type='password'; ico.className='fas fa-eye'; }
 }
+
 function fillDemo(email, pwd) {
   document.getElementById('email').value = email;
   document.getElementById('motDePasse').value = pwd;
 }
+
 function showErr(msg) {
   const el = document.getElementById('alertErr');
   document.getElementById('alertErrText').textContent = msg;
@@ -126,21 +127,25 @@ function showErr(msg) {
 
 document.getElementById('loginForm').addEventListener('submit', async e => {
   e.preventDefault();
+  document.getElementById('alertErr').classList.add('hidden');
+
+  const email = document.getElementById('email').value.trim();
+  const mdp = document.getElementById('motDePasse').value;
+
+  if (!email) { showErr('L\'adresse email est obligatoire.'); return; }
+  if (!mdp)   { showErr('Le mot de passe est obligatoire.'); return; }
+
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Connexion…';
-  document.getElementById('alertErr').classList.add('hidden');
 
-  const res = await apiPost('/auth/login', {
-    email: document.getElementById('email').value.trim(),
-    motDePasse: document.getElementById('motDePasse').value
-  });
+  const res = await apiPost('/auth/login', { email, motDePasse: mdp });
 
   if (res.status === 200) {
     setAuth(res.data.token, { nom: res.data.nom, email: res.data.email, role: res.data.role });
     window.location.href = res.data.role === 'ADMIN' ? '/admin.html' : '/dashboard.html';
   } else {
-    showErr(res.data.erreur || 'Email ou mot de passe incorrect');
+    showErr(res.data?.erreur || 'Email ou mot de passe incorrect.');
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-sign-in-alt"></i>Se connecter';
   }

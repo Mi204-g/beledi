@@ -135,6 +135,15 @@ select.input-field { cursor:pointer; }
                 </div>
               </label>
             </div>
+            <!-- Shown only when AUTRE is selected -->
+            <div id="autreTypeDiv" class="hidden mt-3">
+              <div class="relative">
+                <i class="fas fa-tag absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                <input type="text" id="autreType" class="input-field" style="padding-left:44px"
+                       placeholder="Précisez le type (ex: Bruit, Trottoir, Graffiti…)" maxlength="60">
+              </div>
+              <p class="text-xs text-gray-400 mt-1">Ce détail sera ajouté à votre signalement pour aider les agents.</p>
+            </div>
           </div>
 
           <!-- Location -->
@@ -156,14 +165,27 @@ select.input-field { cursor:pointer; }
             </div>
           </div>
 
-          <!-- Photo URL (optional) -->
+          <!-- Photo (optional) -->
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">
-              Importer une photo <span class="text-gray-400 font-normal">(optionnel)</span>
+              Photo <span class="text-gray-400 font-normal">(optionnel)</span>
             </label>
-            <div class="relative">
-              <i class="fas fa-image absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-              <input type="file" id="photoFile" name="photoFile" class="input-field" style="padding-left:44px" accept="image/*">
+            <input type="file" id="photoFile" name="photoFile" accept="image/*" class="hidden">
+            <button type="button" onclick="document.getElementById('photoFile').click()"
+                    id="photoBtn"
+                    class="flex items-center gap-2.5 bg-blue-50 hover:bg-blue-100 border-2 border-blue-100 hover:border-blue-300 text-blue-600 font-semibold px-5 py-3 rounded-2xl transition-all duration-200 text-sm">
+              <i class="fas fa-camera text-blue-400"></i>
+              <span id="photoBtnLabel">Choisir une photo</span>
+            </button>
+            <div id="photoPreviewWrap" class="hidden mt-3 flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3">
+              <img id="photoPreview" src="" alt="" class="w-12 h-12 rounded-xl object-cover flex-shrink-0">
+              <div class="flex-1 min-w-0">
+                <p id="photoName" class="text-sm font-medium text-gray-700 truncate"></p>
+                <p id="photoSize" class="text-xs text-gray-400 mt-0.5"></p>
+              </div>
+              <button type="button" onclick="clearPhoto()" class="text-gray-400 hover:text-red-500 transition-colors p-1">
+                <i class="fas fa-times"></i>
+              </button>
             </div>
           </div>
 
@@ -269,6 +291,14 @@ document.querySelectorAll('.cat-radio').forEach(label => {
     document.querySelectorAll('.cat-radio .cat-card').forEach(c => { c.className = 'cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-gray-300 transition-all'; });
     const val = label.dataset.val;
     label.querySelector('.cat-card').className = `cat-card border-2 ${catColors[val]} rounded-2xl p-3 text-center transition-all`;
+    const autreDiv = document.getElementById('autreTypeDiv');
+    if (val === 'AUTRE') {
+      autreDiv.classList.remove('hidden');
+      document.getElementById('autreType').focus();
+    } else {
+      autreDiv.classList.add('hidden');
+      document.getElementById('autreType').value = '';
+    }
   });
 });
 
@@ -304,22 +334,28 @@ document.getElementById('signalementForm').addEventListener('submit', async e =>
   const cat = document.querySelector('input[name="categorie"]:checked')?.value;
   const lat = document.getElementById('lat').value;
   const lng = document.getElementById('lng').value;
+  const autreType = document.getElementById('autreType').value.trim();
 
   if (!titre || titre.length < 5)       { showFormErr('Le titre est obligatoire (5 caractères minimum).'); document.getElementById('titre').focus(); return; }
   if (!description || description.length < 10) { showFormErr('La description est obligatoire (10 caractères minimum).'); return; }
   if (!cat)                              { showFormErr('Veuillez sélectionner une catégorie.'); return; }
+  if (cat === 'AUTRE' && !autreType)    { showFormErr('Veuillez préciser le type de problème.'); document.getElementById('autreType').focus(); return; }
   if (!lat || !lng)                      { showFormErr('Veuillez cliquer sur la carte pour placer le marqueur.'); return; }
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Envoi en cours…';
 
+  const finalDescription = cat === 'AUTRE' && autreType
+    ? `[${autreType}] ${description}`
+    : description;
+
   const dto = {
-    titre: document.getElementById('titre').value.trim(),
-    description: document.getElementById('description').value.trim(),
+    titre,
+    description: finalDescription,
     categorie: cat,
-    latitude: parseFloat(document.getElementById('lat').value),
-    longitude: parseFloat(document.getElementById('lng').value)
+    latitude: parseFloat(lat),
+    longitude: parseFloat(lng)
   };
 
   const formData = new FormData();
@@ -338,6 +374,8 @@ document.getElementById('signalementForm').addEventListener('submit', async e =>
     document.getElementById('formOk').classList.add('flex');
     document.getElementById('signalementForm').reset();
     document.querySelectorAll('.cat-card').forEach(c => { c.className = 'cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-gray-300 transition-all'; });
+    document.getElementById('autreTypeDiv').classList.add('hidden');
+    clearPhoto();
     if (pickMarker) { pickMap.removeLayer(pickMarker); pickMarker = null; }
     loadMes();
     setTimeout(() => { document.querySelector('.tab-btn').click(); }, 1500);
@@ -353,6 +391,31 @@ function showFormErr(msg) {
   const el = document.getElementById('formErr');
   document.getElementById('formErrText').textContent = msg;
   el.classList.remove('hidden'); el.classList.add('flex');
+}
+
+// ── Photo picker ──────────────────────────────────────────────────────────────
+document.getElementById('photoFile').addEventListener('change', function() {
+  const file = this.files[0];
+  if (!file) return;
+  const wrap = document.getElementById('photoPreviewWrap');
+  const img  = document.getElementById('photoPreview');
+  const name = document.getElementById('photoName');
+  const size = document.getElementById('photoSize');
+  name.textContent = file.name;
+  size.textContent = (file.size / 1024).toFixed(0) + ' Ko';
+  const reader = new FileReader();
+  reader.onload = e => { img.src = e.target.result; };
+  reader.readAsDataURL(file);
+  wrap.classList.remove('hidden');
+  wrap.classList.add('flex');
+  document.getElementById('photoBtnLabel').textContent = 'Changer la photo';
+});
+
+function clearPhoto() {
+  document.getElementById('photoFile').value = '';
+  document.getElementById('photoPreviewWrap').classList.add('hidden');
+  document.getElementById('photoPreviewWrap').classList.remove('flex');
+  document.getElementById('photoBtnLabel').textContent = 'Choisir une photo';
 }
 
 loadMes();
