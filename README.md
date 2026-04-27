@@ -353,4 +353,4 @@ En cas de problème:
 ## 📄 Licence
 
 Plateforme Baladi — Groupe G11 (24262, 24094, 24204, 24048)  
-Université Supnum Mauritanie 2026
+Supnum 2026
