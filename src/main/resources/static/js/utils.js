@@ -40,9 +40,12 @@ function requireAdmin() {
 // ── HTTP helpers ──────────────────────────────────────────────────────────────
 async function apiGet(path) {
     const res = await fetch(API_BASE + path, {
-        headers: getToken() ? { 'Authorization': 'Bearer ' + getToken() } : {}
+        headers: {
+            'Accept': 'application/json',
+            ...(getToken() ? { 'Authorization': 'Bearer ' + getToken() } : {})
+        }
     });
-    if (res.status === 401) { logout(); return null; }
+    if (res.status === 401 || res.status === 403) { logout(); return null; }
     return res.json();
 }
 async function apiPost(path, data) {
@@ -52,6 +55,7 @@ async function apiPost(path, data) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 ...(token ? { 'Authorization': 'Bearer ' + token } : {})
             },
             body: JSON.stringify(data)
@@ -64,7 +68,7 @@ async function apiPost(path, data) {
             responseData = { erreur: 'Erreur de réponse du serveur' };
         }
 
-        if (res.status === 401) {
+        if (res.status === 401 || res.status === 403) {
             logout();
             return { status: res.status, data: responseData };
         }
@@ -78,7 +82,7 @@ async function apiPost(path, data) {
 async function apiPut(path, data) {
     const res = await fetch(API_BASE + path, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + getToken() },
         body: JSON.stringify(data)
     });
     return { status: res.status, data: await res.json() };
@@ -86,7 +90,7 @@ async function apiPut(path, data) {
 async function apiDelete(path) {
     const res = await fetch(API_BASE + path, {
         method: 'DELETE',
-        headers: { 'Authorization': 'Bearer ' + getToken() }
+        headers: { 'Accept': 'application/json', 'Authorization': 'Bearer ' + getToken() }
     });
     return { status: res.status, data: await res.json() };
 }

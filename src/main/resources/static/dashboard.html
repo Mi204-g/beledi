@@ -434,7 +434,7 @@
         if (res.status === 200) {
           document.getElementById('formOk').classList.remove('hidden');
           document.getElementById('formOk').classList.add('flex');
-          document.getElementById('signalementForm').reset();          document.getElementById('photoFileName').textContent = 'Choisissez une image depuis votre ordinateur.';          document.querySelectorAll('.cat-card').forEach(c => { c.className = 'cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-gray-300 transition-all'; });
+          document.getElementById('signalementForm').reset();          document.getElementById('photoFileLabel').textContent = 'Aucun fichier sélectionné';          document.querySelectorAll('.cat-card').forEach(c => { c.className = 'cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-gray-300 transition-all'; });
           if (pickMarker) { pickMap.removeLayer(pickMarker); pickMarker = null; }
           loadMes();
           setTimeout(() => {
