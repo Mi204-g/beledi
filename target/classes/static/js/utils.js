@@ -21,22 +21,39 @@ function requireAdmin() {
 
 // ── HTTP helpers ──────────────────────────────────────────────────────────────
 async function apiGet(path) {
-    const res = await fetch(API_BASE + path, {
-        headers: getToken() ? { 'Authorization': 'Bearer ' + getToken() } : {}
-    });
-    if (res.status === 401) { logout(); return null; }
-    return res.json();
+    try {
+        const res = await fetch(API_BASE + path, {
+            headers: getToken() ? { 'Authorization': 'Bearer ' + getToken() } : {}
+        });
+        if (res.status === 401) { logout(); return null; }
+        if (!res.ok) return null;
+        const text = await res.text();
+        if (!text) return null;
+        return JSON.parse(text);
+    } catch(e) {
+        return null;
+    }
 }
-async function apiPost(path, data) {
-    const res = await fetch(API_BASE + path, {
+async function apiPost(path, data, isFormData = false) {
+    let options = {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            ...(getToken() ? { 'Authorization': 'Bearer ' + getToken() } : {})
-        },
-        body: JSON.stringify(data)
-    });
-    return { status: res.status, data: await res.json() };
+        headers: getToken() ? { 'Authorization': 'Bearer ' + getToken() } : {}
+    };
+    if (isFormData) {
+        options.body = data;
+    } else {
+        options.headers['Content-Type'] = 'application/json';
+        options.body = JSON.stringify(data);
+    }
+    try {
+        const res = await fetch(API_BASE + path, options);
+        if (res.status === 401) { logout(); return { status: 401, data: {} }; }
+        const text = await res.text();
+        const json = text ? JSON.parse(text) : {};
+        return { status: res.status, data: json };
+    } catch(e) {
+        return { status: 0, data: { erreur: 'Erreur réseau ou serveur inaccessible' } };
+    }
 }
 async function apiPut(path, data) {
     const res = await fetch(API_BASE + path, {
@@ -89,38 +106,38 @@ function renderNavbar(activePage = '') {
         { href:'/#carte', label:'Carte', id:'carte' },
     ];
     const navLinks = links.map(l =>
-        `<a href="${l.href}" class="font-medium transition-colors hover:text-blue-400 ${activePage===l.id?'text-blue-400':'text-gray-300'}">${l.label}</a>`
+        `<a href="${l.href}" class="font-medium transition-colors hover:text-sky-600 ${activePage===l.id?'text-sky-600':'text-sky-800'}">${l.label}</a>`
     ).join('');
 
     let authSection;
     if (user) {
         const dashHref = user.role === 'ADMIN' ? '/admin.html' : '/dashboard.html';
         authSection = `
-            <a href="${dashHref}" class="flex items-center gap-2 text-gray-300 hover:text-blue-400 font-medium transition-colors">
-                <span class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white text-sm font-bold">
+            <a href="${dashHref}" class="flex items-center gap-2 text-sky-800 hover:text-sky-600 font-medium transition-colors">
+                <span class="w-8 h-8 rounded-full bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center text-white text-sm font-bold">
                     ${user.nom.charAt(0).toUpperCase()}
                 </span>
                 <span class="hidden sm:block">${user.nom.split(' ')[0]}</span>
             </a>
-            <button onclick="logout()" class="flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-red-400 transition-colors px-3 py-2 rounded-xl hover:bg-red-900">
+            <button onclick="logout()" class="flex items-center gap-2 text-sm font-medium text-sky-600 hover:text-red-500 transition-colors px-3 py-2 rounded-xl hover:bg-red-50">
                 <i class="fas fa-sign-out-alt"></i><span class="hidden sm:block">Déconnexion</span>
             </button>`;
     } else {
         authSection = `
-            <a href="/login.html" class="text-gray-300 hover:text-blue-400 font-medium transition-colors">Se connecter</a>
-            <a href="/register.html" class="bg-gradient-to-r from-blue-800 to-blue-600 text-white font-semibold px-5 py-2.5 rounded-xl hover:shadow-lg hover:shadow-blue-900 transition-all duration-200 hover:-translate-y-0.5">
+            <a href="/login.html" class="text-sky-800 hover:text-sky-600 font-medium transition-colors">Se connecter</a>
+            <a href="/register.html" class="bg-gradient-to-r from-sky-600 to-sky-400 text-white font-semibold px-5 py-2.5 rounded-xl hover:shadow-lg hover:shadow-sky-200 transition-all duration-200 hover:-translate-y-0.5">
                 <i class="fas fa-user-plus mr-1.5"></i>S'inscrire
             </a>`;
     }
     return `
-    <nav class="sticky top-0 z-50 bg-gray-900/80 backdrop-blur-xl border-b border-gray-800 shadow-sm">
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-sky-100 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <a href="/" class="flex items-center gap-2.5 group">
-                    <div class="w-9 h-9 bg-gradient-to-br from-blue-800 to-blue-600 rounded-xl flex items-center justify-center shadow-md shadow-blue-900 group-hover:scale-105 transition-transform">
+                    <div class="w-9 h-9 bg-gradient-to-br from-sky-600 to-sky-400 rounded-xl flex items-center justify-center shadow-md shadow-sky-200 group-hover:scale-105 transition-transform">
                         <i class="fas fa-city text-white text-sm"></i>
                     </div>
-                    <span class="text-xl font-black bg-gradient-to-r from-blue-700 to-cyan-500 bg-clip-text text-transparent">BELEDI</span>
+                    <span class="text-xl font-black bg-gradient-to-r from-sky-600 to-sky-400 bg-clip-text text-transparent">BELEDI</span>
                 </a>
                 <div class="hidden md:flex items-center gap-6">${navLinks}</div>
                 <div class="flex items-center gap-3">${authSection}</div>

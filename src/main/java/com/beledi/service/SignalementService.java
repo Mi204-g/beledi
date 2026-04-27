@@ -10,11 +10,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Service gérant la logique métier des signalements civiques.
@@ -94,13 +100,40 @@ public class SignalementService {
      * Le statut est automatiquement mis à EN_ATTENTE (le citoyen ne peut pas
      * choisir le statut, c'est l'admin qui le change).
      */
-    public Signalement createSignalement(SignalementDTO dto) {
+    public Signalement createSignalement(SignalementDTO dto, MultipartFile photo) throws IOException {
         User currentUser = getCurrentUser();
+
+        String photoUrl = null;
+        
+        // Sauvegarder le fichier photo localement
+        if (photo != null && !photo.isEmpty()) {
+            // Créer le répertoire de stockage s'il n'existe pas
+            String uploadDir = "uploads/photos";
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            
+            // Générer un nom de fichier unique
+            String originalFilename = photo.getOriginalFilename();
+            String extension = "";
+            if (originalFilename != null && originalFilename.contains(".")) {
+                extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            }
+            String newFilename = UUID.randomUUID().toString() + extension;
+            
+            // Sauvegarder le fichier
+            Path filePath = uploadPath.resolve(newFilename);
+            Files.copy(photo.getInputStream(), filePath);
+            
+            // Stocker l'URL relative
+            photoUrl = "/" + uploadDir + "/" + newFilename;
+        }
 
         Signalement signalement = new Signalement();
         signalement.setTitre(dto.getTitre());
         signalement.setDescription(dto.getDescription());
-        signalement.setPhotoUrl(dto.getPhotoUrl());
+        signalement.setPhotoUrl(photoUrl != null ? photoUrl : dto.getPhotoUrl());
         signalement.setLatitude(dto.getLatitude());
         signalement.setLongitude(dto.getLongitude());
         signalement.setCategorie(dto.getCategorie());

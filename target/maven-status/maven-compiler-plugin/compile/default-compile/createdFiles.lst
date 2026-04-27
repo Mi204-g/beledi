@@ -3,12 +3,12 @@ com/beledi/repository/SignalementRepository.class
 com/beledi/model/Statut.class
 com/beledi/exception/GlobalExceptionHandler.class
 com/beledi/repository/UserRepository.class
-com/beledi/model/Role.class
 com/beledi/dto/SignalementDTO.class
+com/beledi/model/Role.class
 com/beledi/model/Categorie.class
 com/beledi/controller/CommentaireController.class
-com/beledi/security/SecurityConfig.class
 com/beledi/security/JwtFilter.class
+com/beledi/security/SecurityConfig.class
 com/beledi/DataInitializer.class
 com/beledi/model/Signalement.class
 com/beledi/controller/UserController.class
@@ -20,8 +20,8 @@ com/beledi/dto/LoginRequest.class
 com/beledi/security/JwtUtil.class
 com/beledi/controller/AdminController.class
 com/beledi/dto/RegisterRequest.class
-com/beledi/repository/CommentaireRepository.class
 com/beledi/service/UserService.class
+com/beledi/repository/CommentaireRepository.class
 com/beledi/service/UserDetailsServiceImpl.class
 com/beledi/dto/CommentaireRequest.class
 com/beledi/BaladiApplication.class

@@ -82,17 +82,17 @@ select.input-field { cursor:pointer; }
           <span id="formErrText"></span>
         </div>
 
-        <form id="signalementForm" class="space-y-6">
+        <form id="signalementForm" class="space-y-6" novalidate>
           <!-- Titre -->
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Titre du signalement <span class="text-red-500">*</span></label>
-            <input type="text" id="titre" class="input-field" placeholder="Ex: Nid-de-poule dangereux rue principale" required minlength="5">
+            <input type="text" id="titre" class="input-field" placeholder="Ex: Nid-de-poule dangereux rue principale">
           </div>
 
           <!-- Description -->
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Description <span class="text-red-500">*</span></label>
-            <textarea id="description" class="input-field resize-none" rows="4" placeholder="Décrivez le problème en détail : localisation précise, impact sur les habitants, urgence…" required minlength="10" style="padding:12px 16px"></textarea>
+            <textarea id="description" class="input-field resize-none" rows="4" placeholder="Décrivez le problème en détail : localisation précise, impact sur les habitants, urgence…" style="padding:12px 16px"></textarea>
           </div>
 
           <!-- Catégorie -->
@@ -159,11 +159,11 @@ select.input-field { cursor:pointer; }
           <!-- Photo URL (optional) -->
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">
-              URL de la photo <span class="text-gray-400 font-normal">(optionnel)</span>
+              Importer une photo <span class="text-gray-400 font-normal">(optionnel)</span>
             </label>
             <div class="relative">
               <i class="fas fa-image absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-              <input type="url" id="photoUrl" class="input-field" style="padding-left:44px" placeholder="https://exemple.com/photo.jpg">
+              <input type="file" id="photoFile" name="photoFile" class="input-field" style="padding-left:44px" accept="image/*">
             </div>
           </div>
 
@@ -201,23 +201,35 @@ function showTab(id, btn) {
 
 // ── Load my signalements ─────────────────────────────────────────────────────
 async function loadMes() {
-  const data = await apiGet('/signalements/mes');
-  if (!data) return;
-  document.getElementById('countBadge').textContent = data.length;
   const el = document.getElementById('mesList');
-  if (!data.length) {
-    el.innerHTML = `
-      <div class="text-center py-16 text-gray-400">
-        <i class="fas fa-inbox text-6xl mb-4 opacity-30"></i>
-        <p class="text-lg font-medium">Aucun signalement pour l'instant</p>
-        <p class="text-sm mt-1">Cliquez sur "Nouveau signalement" pour commencer</p>
-        <button onclick="document.querySelector('.tab-btn:last-child').click()" class="mt-4 bg-blue-600 text-white font-semibold px-6 py-2.5 rounded-xl hover:bg-blue-700 transition-colors inline-flex items-center gap-2">
-          <i class="fas fa-plus"></i>Créer un signalement
-        </button>
-      </div>`;
-    return;
-  }
-  el.innerHTML = data.map((s,i) => `
+  try {
+    const data = await apiGet('/signalements/mes');
+    if (!data || !Array.isArray(data)) {
+      el.innerHTML = `
+        <div class="text-center py-16 text-red-400">
+          <i class="fas fa-exclamation-circle text-5xl mb-4 opacity-60"></i>
+          <p class="text-lg font-medium">Erreur lors du chargement</p>
+          <p class="text-sm mt-1">Vérifiez votre connexion ou reconnectez-vous</p>
+          <button onclick="loadMes()" class="mt-4 bg-blue-600 text-white font-semibold px-6 py-2.5 rounded-xl hover:bg-blue-700 transition-colors inline-flex items-center gap-2">
+            <i class="fas fa-redo"></i>Réessayer
+          </button>
+        </div>`;
+      return;
+    }
+    document.getElementById('countBadge').textContent = data.length;
+    if (!data.length) {
+      el.innerHTML = `
+        <div class="text-center py-16 text-gray-400">
+          <i class="fas fa-inbox text-6xl mb-4 opacity-30"></i>
+          <p class="text-lg font-medium">Aucun signalement pour l'instant</p>
+          <p class="text-sm mt-1">Cliquez sur "Nouveau signalement" pour commencer</p>
+          <button onclick="document.querySelector('.tab-btn:last-child').click()" class="mt-4 bg-blue-600 text-white font-semibold px-6 py-2.5 rounded-xl hover:bg-blue-700 transition-colors inline-flex items-center gap-2">
+            <i class="fas fa-plus"></i>Créer un signalement
+          </button>
+        </div>`;
+      return;
+    }
+    el.innerHTML = data.map((s,i) => `
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm card-hover overflow-hidden fade-up" style="animation-delay:${i*50}ms">
       <div class="p-6">
         <div class="flex items-start gap-3">
@@ -237,6 +249,16 @@ async function loadMes() {
       </div>
     </div>
   `).join('');
+  } catch(e) {
+    el.innerHTML = `
+      <div class="text-center py-16 text-red-400">
+        <i class="fas fa-exclamation-circle text-5xl mb-4 opacity-60"></i>
+        <p class="text-lg font-medium">Erreur inattendue</p>
+        <button onclick="loadMes()" class="mt-4 bg-blue-600 text-white font-semibold px-6 py-2.5 rounded-xl hover:bg-blue-700 transition-colors inline-flex items-center gap-2">
+          <i class="fas fa-redo"></i>Réessayer
+        </button>
+      </div>`;
+  }
 }
 
 // ── Category radio cards ──────────────────────────────────────────────────────
@@ -277,23 +299,40 @@ document.getElementById('signalementForm').addEventListener('submit', async e =>
   document.getElementById('formOk').classList.add('hidden');
   document.getElementById('formErr').classList.add('hidden');
 
+  const titre = document.getElementById('titre').value.trim();
+  const description = document.getElementById('description').value.trim();
   const cat = document.querySelector('input[name="categorie"]:checked')?.value;
-  if (!cat) { showFormErr('Veuillez sélectionner une catégorie.'); return; }
+  const lat = document.getElementById('lat').value;
+  const lng = document.getElementById('lng').value;
+
+  if (!titre || titre.length < 5)       { showFormErr('Le titre est obligatoire (5 caractères minimum).'); document.getElementById('titre').focus(); return; }
+  if (!description || description.length < 10) { showFormErr('La description est obligatoire (10 caractères minimum).'); return; }
+  if (!cat)                              { showFormErr('Veuillez sélectionner une catégorie.'); return; }
+  if (!lat || !lng)                      { showFormErr('Veuillez cliquer sur la carte pour placer le marqueur.'); return; }
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Envoi en cours…';
 
-  const payload = {
+  const dto = {
     titre: document.getElementById('titre').value.trim(),
     description: document.getElementById('description').value.trim(),
     categorie: cat,
     latitude: parseFloat(document.getElementById('lat').value),
-    longitude: parseFloat(document.getElementById('lng').value),
-    photoUrl: document.getElementById('photoUrl').value.trim() || null
+    longitude: parseFloat(document.getElementById('lng').value)
   };
 
-  const res = await apiPost('/signalements', payload);
+  const formData = new FormData();
+  formData.append('data', new Blob([JSON.stringify(dto)], { type: 'application/json' }));
+
+  const photoFile = document.getElementById('photoFile').files[0];
+  if (photoFile) {
+    formData.append('photo', photoFile);
+  }
+
+  const res = await apiPost('/signalements', formData, true);
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fas fa-paper-plane"></i>Envoyer le signalement';
   if (res.status === 200) {
     document.getElementById('formOk').classList.remove('hidden');
     document.getElementById('formOk').classList.add('flex');
@@ -301,13 +340,12 @@ document.getElementById('signalementForm').addEventListener('submit', async e =>
     document.querySelectorAll('.cat-card').forEach(c => { c.className = 'cat-card border-2 border-gray-200 rounded-2xl p-3 text-center hover:border-gray-300 transition-all'; });
     if (pickMarker) { pickMap.removeLayer(pickMarker); pickMarker = null; }
     loadMes();
-    setTimeout(() => {
-      document.querySelector('.tab-btn').click();
-    }, 1500);
+    setTimeout(() => { document.querySelector('.tab-btn').click(); }, 1500);
+  } else if (res.status === 403 || res.status === 401) {
+    showFormErr('Session expirée. Veuillez vous déconnecter et vous reconnecter.');
   } else {
-    showFormErr(res.data.erreur || 'Une erreur est survenue.');
+    showFormErr(res.data?.erreur || 'Une erreur est survenue. (code: ' + res.status + ')');
   }
-  btn.disabled = false;
   btn.innerHTML = '<i class="fas fa-paper-plane"></i>Envoyer le signalement';
 });
 

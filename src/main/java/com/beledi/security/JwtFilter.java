@@ -63,28 +63,22 @@ public class JwtFilter extends OncePerRequestFilter {
         // - on a bien extrait un email du token
         // - aucune authentification n'est déjà en cours pour cette requête
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            try {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-            // Charge les détails de l'utilisateur depuis la base de données
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-
-            // Valide le token (vérifie email + expiration)
-            if (jwtUtil.validateToken(token, userDetails)) {
-
-                // Crée l'objet d'authentification Spring Security
-                // null = pas de credentials (mot de passe) car on fait confiance au JWT
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities() // ROLE_CITOYEN ou ROLE_ADMIN
-                        );
-
-                // Ajoute les détails de la requête HTTP (IP, session...)
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                // Enregistre l'authentification dans le contexte de sécurité
-                // → Spring Security sait maintenant qui fait la requête
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                if (jwtUtil.validateToken(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            } catch (Exception e) {
+                // Utilisateur introuvable en base (compte supprimé) ou token invalide → on ignore
+                logger.warn("Authentification JWT échouée : " + e.getMessage());
             }
         }
 

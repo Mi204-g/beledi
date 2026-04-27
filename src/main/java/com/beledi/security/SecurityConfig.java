@@ -97,7 +97,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
 
                 // === FICHIERS STATIQUES (site web) ===
-                .requestMatchers("/", "/*.html", "/js/**", "/css/**", "/images/**").permitAll()
+                .requestMatchers("/", "/*.html", "/js/**", "/css/**", "/images/**", "/uploads/**").permitAll()
 
                 // === ROUTES PUBLIQUES (pas de token requis) ===
                 // Inscription et connexion : tout le monde peut y accéder

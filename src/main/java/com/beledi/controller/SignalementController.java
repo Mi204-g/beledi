@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -98,13 +99,15 @@ public class SignalementController {
      */
     @PostMapping
     @PreAuthorize("hasRole('CITOYEN') or hasRole('ADMIN')")
-    public ResponseEntity<?> createSignalement(@Valid @RequestBody SignalementDTO dto) {
+    public ResponseEntity<?> createSignalement(
+            @Valid @RequestPart("data") SignalementDTO dto,
+            @RequestPart(value = "photo", required = false) MultipartFile photo) {
         try {
-            Signalement signalement = signalementService.createSignalement(dto);
-            return ResponseEntity.ok(signalement); // 200 OK avec le signalement créé
+            Signalement signalement = signalementService.createSignalement(dto, photo);
+            return ResponseEntity.ok(signalement);
         } catch (Exception e) {
             return ResponseEntity.badRequest()
-                    .body(Map.of("erreur", e.getMessage())); // 400 Bad Request
+                    .body(Map.of("erreur", e.getMessage()));
         }
     }
 

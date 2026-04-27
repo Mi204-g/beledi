@@ -11,21 +11,21 @@
 <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
 <style>
 * { font-family: 'Inter', sans-serif; }
-.hero-gradient { background: linear-gradient(135deg, #000000 0%, #1e3a8a 40%, #000000 80%, #1e3a8a 100%); }
-.hero-shape { position:absolute; border-radius:50%; background:rgba(255,255,255,0.06); }
+.hero-gradient { background: linear-gradient(135deg, #0284c7 0%, #38bdf8 50%, #0ea5e9 100%); }
+.hero-shape { position:absolute; border-radius:50%; background:rgba(255,255,255,0.15); }
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
 .float-shape { animation: float 8s ease-in-out infinite; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
 .fade-up { animation: fadeUp 0.5s ease forwards; opacity:0; }
 .card-hover { transition: transform 0.25s ease, box-shadow 0.25s ease; }
-.card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.12); }
-.filter-btn { background:#374151; color:#cbd5e1; transition:all 0.2s; border:2px solid transparent; }
-.filter-btn:hover { background:#4b5563; color:#f1f5f9; }
-.filter-btn.active { background:linear-gradient(135deg,#1e3a8a,#000000); color:white; border-color:transparent; box-shadow:0 4px 12px rgba(30,58,138,0.3); }
-.stat-card { background:rgba(255,255,255,0.12); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.2); border-radius:16px; }
+.card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -12px rgba(2,132,199,0.18); }
+.filter-btn { background:#ffffff; color:#0369a1; transition:all 0.2s; border:2px solid #bae6fd; }
+.filter-btn:hover { background:#e0f2fe; color:#0284c7; border-color:#7dd3fc; }
+.filter-btn.active { background:linear-gradient(135deg,#0284c7,#38bdf8); color:white; border-color:transparent; box-shadow:0 4px 12px rgba(2,132,199,0.3); }
+.stat-card { background:rgba(255,255,255,0.25); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.4); border-radius:16px; }
 </style>
 </head>
-<body class="bg-black">
+<body class="bg-white">
 
 <div id="navContainer"></div>
 
@@ -84,12 +84,12 @@
 </section>
 
 <!-- SIGNALEMENTS ────────────────────────────────────────────────── -->
-<section id="signalements" class="py-24 bg-gray-900 text-white">
+<section id="signalements" class="py-24 bg-sky-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-14">
-      <span class="inline-block bg-blue-900 text-blue-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">En temps réel</span>
-      <h2 class="text-4xl md:text-5xl font-black text-white mb-4">Signalements récents</h2>
-      <p class="text-gray-300 text-lg">Suivez les problèmes signalés dans votre quartier</p>
+      <span class="inline-block bg-sky-100 text-sky-600 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">En temps réel</span>
+      <h2 class="text-4xl md:text-5xl font-black text-sky-900 mb-4">Signalements récents</h2>
+      <p class="text-sky-600 text-lg">Suivez les problèmes signalés dans votre quartier</p>
     </div>
 
     <!-- Filters -->
@@ -106,7 +106,7 @@
       <button class="filter-btn px-5 py-2.5 rounded-xl font-semibold text-sm" onclick="applyFilter('statut','RESOLU',this)">
         <i class="fas fa-check-circle mr-1.5"></i>Résolu
       </button>
-      <span class="w-px bg-gray-200 mx-1 self-stretch"></span>
+      <span class="w-px bg-sky-200 mx-1 self-stretch"></span>
       <button class="filter-btn px-5 py-2.5 rounded-xl font-semibold text-sm" onclick="applyFilter('cat','VOIRIE',this)">
         <i class="fas fa-road mr-1.5"></i>Voirie
       </button>
@@ -160,24 +160,24 @@
 </section>
 
 <!-- FOOTER ──────────────────────────────────────────────────── -->
-<footer class="bg-gray-950 text-white py-16">
+<footer class="bg-sky-800 text-white py-16">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex flex-col md:flex-row items-center justify-between gap-6">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-xl flex items-center justify-center">
+        <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
           <i class="fas fa-city text-white"></i>
         </div>
         <div>
           <div class="font-black text-xl">BELEDI</div>
-          <div class="text-gray-400 text-xs">Plateforme citoyenne</div>
+          <div class="text-sky-200 text-xs">Plateforme citoyenne</div>
         </div>
       </div>
-      <div class="flex gap-6 text-gray-400 text-sm">
+      <div class="flex gap-6 text-sky-200 text-sm">
         <a href="/" class="hover:text-white transition-colors">Accueil</a>
         <a href="#signalements" class="hover:text-white transition-colors">Signalements</a>
         <a href="#carte" class="hover:text-white transition-colors">Carte</a>
       </div>
-      <div class="text-gray-500 text-sm">© 2026 Beledi — Groupe G11</div>
+      <div class="text-sky-300 text-sm">© 2026 Beledi — Groupe G11</div>
     </div>
   </div>
 </footer>
