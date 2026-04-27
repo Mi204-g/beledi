@@ -96,17 +96,17 @@ const CAT_ICONS   = { VOIRIE:'fa-road', ELECTRICITE:'fa-bolt', DECHETS:'fa-trash
 const CAT_LABELS  = { VOIRIE:'Voirie', ELECTRICITE:'Électricité', DECHETS:'Déchets', EAU:'Eau', AUTRE:'Autre' };
 const STAT_LABELS = { EN_ATTENTE:'En attente', EN_COURS:'En cours', RESOLU:'Résolu' };
 const STAT_ICONS  = { EN_ATTENTE:'fa-clock', EN_COURS:'fa-spinner fa-spin', RESOLU:'fa-check-circle' };
-const STAT_COLORS = { EN_ATTENTE:'#f59e0b', EN_COURS:'#3b82f6', RESOLU:'#10b981' };
+const STAT_COLORS = { EN_ATTENTE:'#fbbf24', EN_COURS:'#60a5fa', RESOLU:'#34d399' };
 
 function catBadge(cat) {
-    const cls = { VOIRIE:'bg-purple-100 text-purple-700', ELECTRICITE:'bg-yellow-100 text-yellow-700',
-                  DECHETS:'bg-green-100 text-green-700', EAU:'bg-sky-100 text-sky-700', AUTRE:'bg-gray-100 text-gray-600' };
+    const cls = { VOIRIE:'bg-purple-100 text-purple-400', ELECTRICITE:'bg-yellow-100 text-yellow-400',
+                  DECHETS:'bg-green-100 text-green-400', EAU:'bg-sky-100 text-sky-400', AUTRE:'bg-gray-100 text-gray-400' };
     return `<span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg ${cls[cat]||cls.AUTRE}">
         <i class="fas ${CAT_ICONS[cat]||'fa-tag'}"></i>${CAT_LABELS[cat]||cat}</span>`;
 }
 function statutBadge(s) {
-    const cls = { EN_ATTENTE:'bg-amber-100 text-amber-700', EN_COURS:'bg-blue-100 text-blue-700', RESOLU:'bg-emerald-100 text-emerald-700' };
-    return `<span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl ${cls[s]||'bg-gray-100 text-gray-600'}">
+    const cls = { EN_ATTENTE:'bg-amber-100 text-amber-400', EN_COURS:'bg-blue-100 text-blue-400', RESOLU:'bg-emerald-100 text-emerald-400' };
+    return `<span class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl ${cls[s]||'bg-gray-100 text-gray-400'}">
         <i class="fas ${STAT_ICONS[s]||'fa-circle'}"></i>${STAT_LABELS[s]||s}</span>`;
 }
 function timeAgo(dateStr) {
