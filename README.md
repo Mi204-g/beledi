@@ -1,356 +1,132 @@
-# Baladi — Plateforme de Signalement Civique
+# 🏗️ Beledi — Plateforme de Signalement Civique
 
-Plateforme web complète pour le signalement et le suivi des problèmes d'infrastructure urbaine à Nouakchott.
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://www.oracle.com/java/)
+[![JWT](https://img.shields.io/badge/JWT-Authentication-black?style=for-the-badge&logo=json-web-tokens&logoColor=white)](https://jwt.io/)
+[![H2](https://img.shields.io/badge/Database-H2%20%2F%20Postgres-blue?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.h2database.com/)
 
-## ✨ Fonctionnalités Complete
+**Beledi** est une plateforme web moderne conçue pour faciliter le signalement et le suivi des problèmes d'infrastructure urbaine (voirie, électricité, déchets, etc.) à Mauritanie. Elle permet aux citoyens de participer activement à l'amélioration de leur ville et aux administrateurs de gérer efficacement les interventions.
 
-### 🏛️ Authentification & Autorisation
-- ✅ Inscription/Connexion sécurisée avec JWT
-- ✅ Rôles utilisateur (CITOYEN, ADMIN)
-- ✅ Tokens JWT avec expiration 24h
-- ✅ Hachage BCrypt des mots de passe
+---
+
+## 🚀 Fonctionnalités Principales
+
+### 🔐 Sécurité & Utilisateurs
+- **Authentification JWT** : Inscription et connexion sécurisées.
+- **Gestion des Rôles** : Accès différencié pour `CITOYEN` et `ADMIN`.
+- **Protection des données** : Hachage des mots de passe avec BCrypt et validation stricte des entrées.
 
 ### 📋 Gestion des Signalements
-- ✅ **Créer**: Citoyens peuvent signaler des problèmes
-- ✅ **Lire**: Liste publique + détails + pagination
-- ✅ **Mettre à jour**: Propriétaire ou admin peuvent modifier
-- ✅ **Supprimer**: Propriétaire ou admin peuvent supprimer
-- ✅ **Statut**: Admin change le statut (EN_ATTENTE → EN_COURS → RESOLU)
-- ✅ **Catégories**: VOIRIE, ÉLECTRICITÉ, DÉCHETS, EAU, AUTRE
-- ✅ **Localisation**: Latitude/Longitude + photos
+- **Cycle de vie complet** : Création, consultation, modification et suppression.
+- **Suivi en temps réel** : Changement de statut par les administrateurs (`EN_ATTENTE` → `EN_COURS` → `RESOLU`).
+- **Organisation** : Catégorisation (VOIRIE, ÉLECTRICITÉ, DÉCHETS, EAU, AUTRE) et géolocalisation.
+- **Média** : Support pour l'ajout de photos via URL.
 
-### 💬 Commentaires (NOUVEAU)
-- ✅ Ajouter commentaires sur les signalements
-- ✅ Consulter tous les commentaires
-- ✅ Modifier ses commentaires
-- ✅ Supprimer ses commentaires (ou admin)
-- ✅ Endpoints: `/api/signalements/{id}/commentaires`
+### 💬 Interaction & Feedback
+- **Système de commentaires** : Permet aux utilisateurs de discuter sur chaque signalement.
+- **Transparence** : Historique des échanges visible par tous les utilisateurs authentifiés.
 
-### 📊 Dashboard Admin
-- ✅ Statistiques globales (total, par statut, par catégorie)
-- ✅ Gestion des statuts de signalements
-- ✅ Endpoint: `/api/admin/statistiques`
-
-### 🔍 Pagination & Filtrage (NOUVEAU)
-- ✅ Pagination sur liste signalements
-- ✅ Tri par date, titre, statut
-- ✅ Ordre ascendant/descendant
-- ✅ Endpoint: `/api/signalements/page?page=0&size=10&sortBy=dateCreation`
-
-### 🛡️ Sécurité
-- ✅ CORS configuré
-- ✅ Validation des données avec annotations (@NotBlank, @Email, @Size)
-- ✅ Gestion centralisée d'erreurs (GlobalExceptionHandler)
-- ✅ Authentification basée sur JWT
-- ✅ Autorisation au niveau des endpoints
+### 📊 Pilotage Admin
+- **Dashboard Statistique** : Vue d'ensemble des signalements par statut et par catégorie.
+- **Interface de gestion** : Outils dédiés pour la modération et la mise à jour rapide.
 
 ---
 
-## 🚀 Getting Started
+## 🛠️ Stack Technique
+
+- **Backend** : Spring Boot 3.2.0, Spring Security (JWT), Spring Data JPA.
+- **Base de données** : H2 (Développement) / PostgreSQL (Production).
+- **Langage** : Java 21.
+- **Outils** : Maven, JWT (JJWT), Hibernate, Validation API.
+
+---
+
+## 📂 Structure du Projet
+
+```text
+src/main/java/com/beledi/
+├── controller/     # API Endpoints (RestControllers)
+├── service/        # Logique métier et validation
+├── model/          # Entités JPA (Base de données)
+├── repository/     # Interfaces d'accès aux données
+├── dto/            # Objets de transfert de données (Request/Response)
+├── security/       # Configuration JWT et Spring Security
+└── exception/      # Gestion centralisée des erreurs
+```
+
+---
+
+## 🚦 Démarrage Rapide
 
 ### Prérequis
-- Java 21+
+- Java 21 ou supérieur
 - Maven 3.8+
-- Navigateur moderne
 
-### Installation & Démarrage
+### Installation
+1. **Cloner le projet**
+   ```bash
+   git clone <repository-url>
+   cd beledi
+   ```
 
-#### 1. Cloner le projet
-```bash
-cd /home/mine/beledi-1
-```
+2. **Compiler**
+   ```bash
+   mvn clean install
+   ```
 
-#### 2. Compiler le projet
-```bash
-mvn clean compile
-```
+3. **Lancer l'application**
+   ```bash
+   mvn spring-boot:run
+   ```
 
-#### 3. Lancer le serveur
-```bash
-mvn spring-boot:run
-```
+L'application sera accessible sur : **http://localhost:8080**
 
-L'application démarre sur: **http://localhost:8080**
-
-### Base de Données
-- **Mode développement**: H2 (en mémoire)
-- **Console H2**: http://localhost:8080/h2-console
-  - User: `sa`
-  - Password: (laissez vide)
-  - JDBC URL: `jdbc:h2:mem:baladidb`
-
-### Pages Disponibles
-- **Accueil**: http://localhost:8080
-- **Inscription**: http://localhost:8080/register.html
-- **Connexion**: http://localhost:8080/login.html
-- **Dashboard Citoyen**: http://localhost:8080/dashboard.html
-- **Dashboard Admin**: http://localhost:8080/admin.html
-- **Documentation API**: http://localhost:8080/api-docs.html
+### Accès Rapide
+- **Frontend** : `http://localhost:8080/index.html`
+- **Console H2** : `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:baladidb`)
+- **Documentation API** : `http://localhost:8080/api-docs.html`
 
 ---
 
-## 📚 API Documentation
-
-### Base URL
-```
-http://localhost:8080/api
-```
+## 📖 Guide de l'API
 
 ### Authentification
-Tous les endpoints protégés nécessitent un header:
-```
-Authorization: Bearer {JWT_TOKEN}
-```
+| Méthode | Endpoint | Description |
+|:--- |:--- |:--- |
+| `POST` | `/api/auth/register` | Création d'un nouveau compte |
+| `POST` | `/api/auth/login` | Connexion et récupération du Token JWT |
 
-### Endpoints Principaux
-
-#### Auth
-| Méthode | Endpoint | Auth | Description |
-|---------|----------|------|-------------|
-| POST | `/auth/register` | ❌ | Créer un compte |
-| POST | `/auth/login` | ❌ | Se connecter |
-
-#### Signalements
-| Méthode | Endpoint | Auth | Description |
-|---------|----------|------|-------------|
-| GET | `/signalements` | ❌ | Liste tous |
-| GET | `/signalements/page` | ❌ | Liste paginée |
-| GET | `/signalements/{id}` | ❌ | Détail |
-| GET | `/signalements/mes` | ✅ | Mes signalements |
-| POST | `/signalements` | ✅ | Créer |
-| PUT | `/signalements/{id}` | ✅ | Mettre à jour |
-| PUT | `/signalements/{id}/statut` | 👑 | Changer statut (admin) |
-| DELETE | `/signalements/{id}` | ✅ | Supprimer |
-
-#### Commentaires
-| Méthode | Endpoint | Auth | Description |
-|---------|----------|------|-------------|
-| GET | `/signalements/{id}/commentaires` | ❌ | Tous les commentaires |
-| GET | `/signalements/{id}/commentaires/{cId}` | ❌ | Un commentaire |
-| POST | `/signalements/{id}/commentaires` | ✅ | Ajouter |
-| PUT | `/signalements/{id}/commentaires/{cId}` | ✅ | Mettre à jour |
-| DELETE | `/signalements/{id}/commentaires/{cId}` | ✅ | Supprimer |
-
-#### Admin
-| Méthode | Endpoint | Auth | Description |
-|---------|----------|------|-------------|
-| GET | `/admin/statistiques` | 👑 | Stats dashboard |
-
-**Légende**: ❌ Public | ✅ Authentifié | 👑 Admin seulement
-
-### Exemple de Requête
-
-#### S'inscrire
-```bash
-curl -X POST http://localhost:8080/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nom": "Ahmed Ould Mohamed",
-    "email": "ahmed@example.com",
-    "motDePasse": "SecurePassword123!"
-  }'
-```
-
-#### Se connecter
-```bash
-curl -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "ahmed@example.com",
-    "motDePasse": "SecurePassword123!"
-  }'
-```
-
-#### Créer un signalement
-```bash
-curl -X POST http://localhost:8080/api/signalements \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer {JWT_TOKEN}" \
-  -d '{
-    "titre": "Nid de poule dangereux",
-    "description": "Grand trou sur la route principale",
-    "categorie": "VOIRIE",
-    "latitude": 18.0785,
-    "longitude": -15.9654,
-    "photoUrl": null
-  }'
-```
+### Signalements
+| Méthode | Endpoint | Description | Auth |
+|:--- |:--- |:--- |:--- |
+| `GET` | `/api/signalements` | Liste tous les signalements | Public |
+| `GET` | `/api/signalements/page` | Liste paginée et triée | Public |
+| `POST` | `/api/signalements` | Créer un signalement | ✅ JWT |
+| `PUT` | `/api/signalements/{id}` | Modifier un signalement | ✅ Owner/Admin |
+| `DELETE` | `/api/signalements/{id}` | Supprimer un signalement | ✅ Owner/Admin |
+| `PATCH` | `/api/signalements/{id}/statut`| Changer le statut | 👑 Admin |
 
 ---
 
-## 🏗️ Architecture
-
-```
-src/main/java/com/baladi/
-├── model/              # Entités JPA
-│   ├── User.java
-│   ├── Signalement.java
-│   ├── Commentaire.java
-│   ├── Role.java (enum)
-│   ├── Statut.java (enum)
-│   └── Categorie.java (enum)
-├── controller/         # API REST Controllers
-│   ├── UserController.java
-│   ├── SignalementController.java
-│   └── CommentaireController.java
-├── service/            # Logique métier
-│   ├── UserService.java
-│   ├── SignalementService.java
-│   └── CommentaireService.java
-├── repository/         # Accès données (JPA)
-│   ├── UserRepository.java
-│   ├── SignalementRepository.java
-│   └── CommentaireRepository.java
-├── dto/                # Data Transfer Objects
-│   ├── LoginRequest.java
-│   ├── RegisterRequest.java
-│   ├── SignalementDTO.java
-│   └── CommentaireRequest.java (NEW)
-├── security/           # JWT & Spring Security
-│   ├── JwtUtil.java
-│   ├── JwtFilter.java
-│   ├── SecurityConfig.java
-│   └── UserDetailsServiceImpl.java
-├── exception/          # Exception Handling
-│   └── GlobalExceptionHandler.java (NEW)
-└── BaladiApplication.java
-```
+## 📈 Améliorations Récentes
+- ✅ **Pagination & Tri** : Amélioration des performances d'affichage.
+- ✅ **Gestion d'erreurs** : Réponses JSON uniformes pour toutes les exceptions.
+- ✅ **Commentaires** : Ajout de la logique de discussion sur les signalements.
+- ✅ **Documentation** : Mise en place d'une page de documentation interactive.
 
 ---
 
-## 🔐 Sécurité
-
-### Configuration
-- **JWT Secret**: Configuré dans `application.properties`
-- **Expiration Token**: 24 heures
-- **Hachage Mot de Passe**: BCrypt
-- **CORS**: Autorisé pour localhost
-
-### Points Sensibles Protégés
-- ❌ Créer/Mettre à jour/Supprimer un signalement: Authentification requise
-- ❌ Accéder aux statistiques admin: Admin seulement
-- ❌ Changer le statut d'un signalement: Admin seulement
+## 🗓️ Roadmap
+- [ ] Intégration de Google Maps pour une sélection de lieu plus précise.
+- [ ] Système d'upload d'images direct (Supabase Storage/S3).
+- [ ] Notifications par email pour le suivi des changements de statut.
+- [ ] Application mobile (React Native / Flutter).
 
 ---
 
-## 📋 Améliorations Apportées (par rapport à la version initiale)
-
-### ✅ Corrections Critiques
-1. **Base de Données**: Migration de Supabase PostgreSQL vers H2 local (développement)
-2. **Commentaires**: Implémentation complète (service + contrôleur + endpoints)
-
-### ✅ Nouvelles Fonctionnalités
-3. **Pagination**: Endpoint `/api/signalements/page` avec tri
-4. **Mise à jour Signalement**: PUT `/api/signalements/{id}`
-5. **Suppression Signalement**: DELETE `/api/signalements/{id}`
-6. **Mise à jour Commentaires**: PUT/DELETE `/api/signalements/{id}/commentaires/{cId}`
-7. **Gestion d'Erreurs Globale**: GlobalExceptionHandler pour réponses cohérentes
-8. **Documentation API**: Page `/api-docs.html` complète
-
-### ✅ Améliorations de Sécurité
-9. **Validation Stricte**: Annotations @NotBlank, @Email, @Size
-10. **Vérifications Authorization**: Propriétaire ou admin pour modifier/supprimer
-11. **Gestion d'Erreurs Sécurisée**: Messages d'erreur appropriés
-
-### ✅ Améliorations UX
-12. **API Cohérente**: Format de réponse uniforme
-13. **Support du Frontend**: Fonction `apiDelete()` ajoutée à utils.js
-14. **Documentation**: Notes complètes en ligne
+## 👥 Équipe & Crédits
+**Projet développé par le Groupe G11 - Supnum 2026**
+- Matricules : 24262, 24094, 24204, 24048
 
 ---
-
-## 🧪 Test Rapide
-
-### 1. Créer un compte citoyen
-```bash
-curl -X POST http://localhost:8080/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nom":"Ahmed Mohamed",
-    "email":"ahmed@test.com",
-    "motDePasse":"Test123!"
-  }'
-```
-
-### 2. Récupérer le token JWT
-```bash
-curl -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"ahmed@test.com","motDePasse":"Test123!"}'
-```
-
-### 3. Créer un signalement
-```bash
-TOKEN="eyJhbGci..." # Token reçu à l'étape 2
-
-curl -X POST http://localhost:8080/api/signalements \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
-  -d '{
-    "titre":"Lampadaire cassé",
-    "description":"Électricité défaillante Rue 1",
-    "categorie":"ELECTRICITE",
-    "latitude":18.08,
-    "longitude":-15.97
-  }'
-```
-
-### 4. Consulter les signalements
-```bash
-curl http://localhost:8080/api/signalements | jq .
-```
-
----
-
-## 📝 Notes Développement
-
-### Développement Futur
-- [ ] Upload de photos (Supabase Storage)
-- [ ] Partage sur réseaux sociaux
-- [ ] Notifications push
-- [ ] Intégration Google Maps
-- [ ] Rapport PDF des statistiques
-- [ ] Système de vote (upvote/downvote)
-- [ ] Catégorisation automatique (ML)
-
-### Production Checklist
-- [ ] Configurer variable d'environnement pour JWT secret
-- [ ] Activer HTTPS/SSL
-- [ ] Configurer base de données PostgreSQL/Supabase
-- [ ] Mettre en `ddl-auto=validate` pour Hibernate
-- [ ] Implémenter monitoring & logging
-- [ ] Rate limiting sur login
-- [ ] Sauvegarder les données régulièrement
-
-### Configuration Production (application.properties)
-```properties
-# Base de Données PostgreSQL/Supabase
-spring.datasource.url=jdbc:postgresql://HOST:PORT/DATABASE?sslmode=require
-spring.datasource.username=${DB_USERNAME}
-spring.datasource.password=${DB_PASSWORD}
-spring.jpa.hibernate.ddl-auto=validate
-
-# JWT Secret (venir de l'environnement)
-jwt.secret=${JWT_SECRET}
-jwt.expiration=86400000
-
-# HTTPS
-server.ssl.key-store=${SSL_KEYSTORE}
-server.ssl.key-store-password=${SSL_PASSWORD}
-```
-
----
-
-## 📞 Support
-
-En cas de problème:
-1. Consultez les logs: `http://localhost:8080/h2-console`
-2. Vérifiez la documentation API: `http://localhost:8080/api-docs.html`
-3. Testez avec cURL les endpoints fournis
-
----
-
-## 📄 Licence
-
-Plateforme Baladi — Groupe G11 (24262, 24094, 24204, 24048)  
-Supnum 2026
+Licensed under MIT.
