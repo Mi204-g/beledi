@@ -100,8 +100,8 @@ public class SecurityConfig {
                 .requestMatchers("/", "/*.html", "/js/**", "/css/**", "/images/**", "/uploads/**").permitAll()
 
                 // === ROUTES PUBLIQUES (pas de token requis) ===
-                // Inscription et connexion : tout le monde peut y accéder
-                .requestMatchers("/api/auth/**").permitAll()
+                // Inscription, connexion et console H2 : tout le monde peut y accéder
+                .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
 
                 // === ROUTES ADMIN : réservées au rôle ADMIN ===
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
@@ -125,6 +125,9 @@ public class SecurityConfig {
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
+
+            // Autoriser l'affichage de la console H2 dans une frame (indispensable pour /h2-console)
+            .headers(headers -> headers.frameOptions(frame -> frame.disable()))
 
             // Enregistre notre fournisseur d'authentification
             .authenticationProvider(authenticationProvider())
