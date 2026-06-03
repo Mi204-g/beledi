@@ -11,30 +11,35 @@
 <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
 <style>
 * { font-family: 'Inter', sans-serif; }
+html { scroll-behavior: smooth; }
+body { background: #f8fafc; color: #0f172a; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 .fade-up { animation: fadeUp 0.4s ease forwards; opacity:0; }
-.stat-card { border-radius:20px; padding:24px; transition:transform 0.2s, box-shadow 0.2s; }
-.stat-card:hover { transform:translateY(-3px); box-shadow:0 16px 32px -8px var(--shadow); }
-.status-select {
-  appearance:none; border:2px solid #e2e8f0; border-radius:10px; padding:6px 32px 6px 12px;
-  font-size:13px; font-weight:600; cursor:pointer; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-  background-repeat:no-repeat; background-position:right 8px center; background-size:16px;
-  transition:all 0.2s; outline:none;
-}
-.status-select:focus { border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,0.1); }
-.status-EN_ATTENTE { background:#fef9c3; color:#854d0e; border-color:#fde68a; }
-.status-EN_COURS   { background:#dbeafe; color:#1e40af; border-color:#bfdbfe; }
-.status-RESOLU     { background:#d1fae5; color:#065f46; border-color:#a7f3d0; }
+.stat-card { border-radius:24px; padding:28px; transition:transform 0.25s ease, box-shadow 0.25s ease; background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(248,250,252,0.98)); border:1px solid rgba(148,163,184,0.18); }
+.stat-card:hover { transform:translateY(-4px); box-shadow:0 20px 60px -24px rgba(15,23,42,0.18); }
+.section-header { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; }
+.section-small { color:#64748b; font-size:0.95rem; line-height:1.7; }
+.section-label { display:inline-flex; align-items:center; gap:0.35rem; background:#dbeafe; color:#0369a1; padding:0.55rem 0.95rem; border-radius:999px; font-size:0.78rem; font-weight:700; }
+.section-note { color:#475569; font-size:0.95rem; line-height:1.75; }
+.table-card { background:#ffffff; border:1px solid #e2e8f0; border-radius:28px; overflow:hidden; box-shadow:0 20px 60px -40px rgba(15,23,42,0.15); display:flex; flex-direction:column; min-h-0; }
+.table-card table { border-collapse: separate; border-spacing:0; width:100%; height:auto; }
+.table-card thead { background:#f8fafc; }
+.table-card th { color:#475569; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+.table-card tbody tr { transition:background 0.2s ease; }
+.table-card tbody tr:hover { background:#f8fafc; }
+.table-card td, .table-card th { padding:1.1rem 1.25rem; }
+.status-select { appearance:none; border:1px solid #cbd5e1; border-radius:14px; padding:8px 34px 8px 14px; font-size:0.9rem; font-weight:700; cursor:pointer; background:#f8fafc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E") no-repeat right 12px center / 16px 16px; transition:all 0.2s ease; outline:none; }
+.status-select:focus { border-color:#2563eb; box-shadow:0 0 0 3px rgba(59,130,246,0.14); }
+.status-EN_ATTENTE { background:#fef9c3; color:#78350f; }
+.status-EN_COURS   { background:#dbeafe; color:#1e40af; }
+.status-RESOLU     { background:#d1fae5; color:#064e3b; }
 .row-enter { animation: fadeUp 0.3s ease forwards; opacity:0; }
-.pill { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; padding:4px 12px; border-radius:20px; }
-.nav-link { color: #64748b; }
-.nav-link:hover { color: #2563eb; background: #eff6ff; }
-.nav-link.active { background: #2563eb; color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
-.section-note { color: #475569; font-size: 0.95rem; line-height: 1.75; }
-.section-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-.section-header h2 { margin: 0; }
-.section-label { display: inline-flex; align-items: center; gap: 0.35rem; background: #dbeafe; color: #1d4ed8; padding: 0.55rem 0.95rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; }
-.section-small { color: #64748b; font-size: 0.9rem; }
+.pill { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; padding:6px 14px; border-radius:999px; background:#f8fafc; color:#334155; }
+.nav-link { color:#475569; background:#f8fafc; border-radius:999px; padding:0.85rem 1.1rem; transition:all 0.2s ease; display:inline-flex; align-items:center; gap:0.5rem; }
+.nav-link:hover { color:#1d4ed8; background:#eff6ff; }
+.nav-link.active { background:#2563eb; color:white; box-shadow:0 16px 40px -20px rgba(37,99,235,0.35); }
+.btn-update { color:#2563eb; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; }
+.btn-update:hover { color:#1d4ed8; }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -43,36 +48,7 @@
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-  <!-- New Integrated Admin Header -->
-  <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 mb-10 fade-up" id="page-header">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-      <div class="flex items-center gap-4">
-        <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-100">
-          <i class="fas fa-shield-alt text-white text-lg"></i>
-        </div>
-        <div>
-          <h1 class="text-2xl font-black text-gray-900 leading-tight">Administration</h1>
-          <p class="text-sm text-gray-500 font-medium">Gestion de la plateforme Beledi</p>
-          <p class="text-xs text-slate-400 mt-2 max-w-xl">Utilisez les cadres ci-dessous pour suivre les signalements, superviser les utilisateurs et piloter les interventions.</p>
-        </div>
-      </div>
-      
-      <div class="flex flex-wrap items-center gap-2 p-1.5 bg-gray-50 rounded-2xl border border-gray-100">
-        <a href="#view-stats" class="nav-link px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2" data-section="view-stats">
-          <i class="fas fa-chart-pie"></i><span>Stats</span>
-        </a>
-        <a href="#view-signalements" class="nav-link px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2" data-section="view-signalements">
-          <i class="fas fa-list-ul"></i><span>Signalements</span>
-        </a>
-        <a href="#view-users" class="nav-link px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2" data-section="view-users">
-          <i class="fas fa-users"></i><span>Utilisateurs</span>
-        </a>
-        <a href="#view-carte" class="nav-link px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2" data-section="view-carte">
-          <i class="fas fa-map-marked-alt"></i><span>Carte</span>
-        </a>
-      </div>
-    </div>
-  </div>
+  
 
   <div class="bg-slate-50 border border-slate-100 rounded-3xl p-6 mb-10 fade-up">
     <div class="section-header">
@@ -128,7 +104,7 @@
   <div id="dashboard-grid" class="grid grid-cols-1 lg:grid-cols-12 gap-6 fade-up" style="animation-delay:0.3s">
     
     <!-- Left Column: Signalements & Users -->
-    <div id="left-column" class="lg:col-span-8 space-y-6">
+    <div id="left-column" class="lg:col-span-8 gap-6 flex flex-col min-h-0">
       
       <!-- View Stats (Container for stats cards if needed elsewhere, but they are currently above) -->
       <div id="view-stats" style="display:none">
@@ -139,8 +115,8 @@
       </div>
 
   <!-- Signalements Section -->
-      <div id="view-signalements" class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden" style="display:none">
-        <div class="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div id="view-signalements" class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col" style="display:none; height: calc(100vh - 280px)">
+        <div class="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 flex-shrink-0">
           <div>
             <h2 class="text-lg font-bold text-gray-900"><i class="fas fa-list-ul mr-2 text-gray-400"></i>Signalements</h2>
             <p class="section-small mt-1">Trouvez rapidement un signalement et mettez à jour son statut.</p>
@@ -155,7 +131,7 @@
             </div>
           </div>
         </div>
-        <div class="max-h-[500px] overflow-y-auto overflow-x-hidden">
+        <div class="table-card flex-grow overflow-y-auto overflow-x-hidden">
           <table class="w-full">
             <thead class="sticky top-0 bg-gray-50 z-10">
               <tr class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -172,25 +148,34 @@
       </div>
 
       <!-- Users Section -->
-      <div id="view-users" class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden" style="display:none">
-        <div class="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div id="view-users" class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col" style="display:none; height: calc(100vh - 280px)">
+        <div class="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 flex-shrink-0">
           <div>
             <h2 class="text-lg font-bold text-gray-900"><i class="fas fa-users mr-2 text-gray-400"></i>Utilisateurs</h2>
-            <p class="section-small mt-1">Voir qui participe et consultez rapidement les rôles.</p>
+            <p class="section-small mt-1">Gérez les rôles, modifiez les droits d'accès ou supprimez les comptes utilisateurs si nécessaire.</p>
           </div>
-          <span class="section-label"><i class="fas fa-user-check"></i> <span id="usersCount">0</span> comptes</span>
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="section-label"><i class="fas fa-user-check"></i> <span id="usersCount">0</span> comptes</span>
+            <div class="relative">
+              <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+              <input type="text" id="searchUsers" placeholder="Rechercher un utilisateur…"
+                     class="pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 w-48"
+                     oninput="filterUsers()">
+            </div>
+          </div>
         </div>
-        <div class="max-h-[300px] overflow-y-auto">
+        <div class="table-card flex-grow overflow-y-auto">
           <table class="w-full">
             <thead class="sticky top-0 bg-gray-50 z-10">
               <tr class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 <th class="px-6 py-4">Utilisateur</th>
                 <th class="px-6 py-4">Rôle</th>
                 <th class="px-6 py-4 text-right">Inscription</th>
+                <th class="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody id="userTableBody" class="divide-y divide-gray-50 text-sm">
-              <tr><td colspan="3" class="px-6 py-16 text-center text-gray-400"><i class="fas fa-spinner fa-spin text-3xl mb-3 block"></i>Chargement…</td></tr>
+              <tr><td colspan="4" class="px-6 py-16 text-center text-gray-400"><i class="fas fa-spinner fa-spin text-3xl mb-3 block"></i>Chargement…</td></tr>
             </tbody>
           </table>
         </div>
@@ -429,13 +414,17 @@ async function loadSignalements() {
 async function loadUsers() {
   allUsers = await apiGet('/admin/users');
   document.getElementById('usersCount').textContent = allUsers?.length || 0;
+  renderUsersTable(allUsers);
+}
+
+function renderUsersTable(users) {
   const body = document.getElementById('userTableBody');
-  if (!allUsers || !allUsers.length) {
-    body.innerHTML = `<tr><td colspan="3" class="px-6 py-16 text-center text-gray-400"><i class="fas fa-user-slash text-4xl mb-3 block opacity-30"></i>Aucun utilisateur trouvé</td></tr>`;
+  if (!users || !users.length) {
+    body.innerHTML = `<tr><td colspan="4" class="px-6 py-16 text-center text-gray-400"><i class="fas fa-user-slash text-4xl mb-3 block opacity-30"></i>Aucun utilisateur trouvé</td></tr>`;
     return;
   }
-  body.innerHTML = allUsers.map((u, i) => `
-    <tr class="hover:bg-gray-50 transition-colors row-enter" style="animation-delay:${i * 30}ms">
+  body.innerHTML = users.map((u, i) => `
+    <tr class="hover:bg-gray-50 transition-colors row-enter" style="animation-delay:${i * 30}ms" id="user-row-${u.id}">
       <td class="px-6 py-4">
         <div class="flex items-center gap-3">
           <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">
@@ -448,14 +437,53 @@ async function loadUsers() {
         </div>
       </td>
       <td class="px-6 py-4">
-        <span class="px-3 py-1 rounded-full text-[10px] font-bold ${u.role==='ADMIN'?'bg-purple-100 text-purple-700':'bg-gray-100 text-gray-600'}">
+        <button onclick="toggleUserRole(${u.id}, '${u.role}')" class="px-3 py-1 rounded-full text-[10px] font-bold transition-all hover:scale-105 ${u.role==='ADMIN'?'bg-purple-100 text-purple-700 hover:bg-purple-200':'bg-gray-100 text-gray-600 hover:bg-gray-200'}" title="Cliquez pour changer le rôle">
           ${u.role}
-        </span>
+        </button>
       </td>
       <td class="px-6 py-4 text-right text-xs text-gray-400">${new Date(u.dateInscription).toLocaleDateString()}</td>
+      <td class="px-6 py-4 text-right flex items-center justify-end gap-2">
+        <button onclick="deleteUser(${u.id}, '${u.nom}')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Supprimer l'utilisateur">
+          <i class="fas fa-trash"></i>
+        </button>
+      </td>
     </tr>
   `).join('');
 }
+
+async function toggleUserRole(userId, currentRole) {
+  const newRole = currentRole === 'ADMIN' ? 'CITOYEN' : 'ADMIN';
+  const user = allUsers.find(u => u.id === userId);
+  if (!user) return;
+  
+  if (!confirm(`Changer le rôle de ${user.nom} de "${currentRole}" à "${newRole}" ?`)) return;
+  
+  const res = await apiPut(`/admin/users/${userId}/role`, { role: newRole });
+  
+  if (res.status === 200) {
+    user.role = newRole;
+    renderUsersTable(allUsers);
+    showToast(`Rôle de ${user.nom} changé en ${newRole}`, 'check-circle', 'text-emerald-400');
+  } else {
+    showToast(`Erreur : ${res.data?.erreur || 'Impossible de changer le rôle'}`, 'exclamation-circle', 'text-red-400');
+  }
+}
+
+async function deleteUser(userId, userName) {
+  if (!confirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur "${userName}" ? Cette action est irréversible.`)) return;
+  
+  const res = await apiDelete(`/admin/users/${userId}`);
+  
+  if (res.status === 200) {
+    allUsers = allUsers.filter(u => u.id !== userId);
+    renderUsersTable(allUsers);
+    document.getElementById('usersCount').textContent = allUsers.length;
+    showToast(`Utilisateur ${userName} supprimé avec succès`, 'check-circle', 'text-emerald-400');
+  } else {
+    showToast(`Erreur : ${res.data?.erreur || 'Impossible de supprimer l\'utilisateur'}`, 'exclamation-circle', 'text-red-400');
+  }
+}
+
 
 function renderTable(data) {
   document.getElementById('signalementsCount').textContent = data.length;
@@ -534,6 +562,17 @@ function filterTable() {
   if (s) filtered = filtered.filter(x => x.statut === s);
   renderTable(filtered);
 }
+
+function filterUsers() {
+  const q = document.getElementById('searchUsers').value.toLowerCase();
+  if (!allUsers) return;
+  const filtered = allUsers.filter(u => 
+    u.nom.toLowerCase().includes(q) || 
+    u.email.toLowerCase().includes(q)
+  );
+  renderUsersTable(filtered);
+}
+
 
 function showToast(msg, icon, iconClass) {
   const t = document.getElementById('toast');
