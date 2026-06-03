@@ -10,17 +10,25 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
 <style>
-* { font-family: 'Inter', sans-serif; }
+* { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-.fade-up { animation: fadeUp 0.5s ease forwards; opacity:0; }
+.fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity:0; }
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
-.hero-circle { position:absolute; border-radius:50%; background:rgba(14,165,233,0.1); pointer-events:none; }
-.card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.card-hover:hover { transform: translateY(-3px); box-shadow: 0 12px 32px -8px rgba(0,0,0,0.1); }
-.filter-btn { background:#fff; color:#374151; transition:all 0.2s; border:1.5px solid #e5e7eb; border-radius:10px; }
-.filter-btn:hover { border-color:#0ea5e9; color:#0284c7; }
-.filter-btn.active { background:#0284c7; color:#fff; border-color:#0284c7; }
-.stat-card { background:#fff; border:1.5px solid #e5e7eb; border-radius:16px; }
+.hero-circle { position:absolute; border-radius:50%; background:radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(37,99,235,0.02) 70%); pointer-events:none; }
+.card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+.card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -15px rgba(0,0,0,0.08); border-color: rgba(59,130,246,0.2); }
+.filter-btn { background:#fff; color:#475569; transition:all 0.2s; border:1.5px solid #e2e8f0; border-radius:12px; }
+.filter-btn:hover { border-color:#3b82f6; color:#2563eb; background:#f8fafc; }
+.filter-btn.active { background:#2563eb; color:#fff; border-color:#2563eb; box-shadow: 0 4px 12px rgba(37,99,235,0.2); }
+.badge-chip { display:inline-flex; align-items:center; gap:0.35rem; background:#eef2ff; color:#4338ca; padding:.5rem .85rem; border-radius:999px; font-size:.82rem; font-weight:700; }
+.feature-card { background:#ffffff; border:1px solid #e2e8f0; border-radius:24px; padding:2rem; box-shadow:0 20px 40px -24px rgba(15,23,42,0.12); transition:transform .25s ease, box-shadow .25s ease; }
+.feature-card:hover { transform:translateY(-4px); box-shadow:0 24px 50px -28px rgba(15,23,42,0.18); }
+.map-cta-overlay { position:absolute; inset:0; background:rgba(15,23,42,0.55); display:flex; align-items:center; justify-content:center; text-align:center; padding:2rem; border-radius:1rem; }
+.map-cta-overlay p { color:#f8fafc; }
+.map-cta-overlay a { background:rgba(255,255,255,0.95); color:#1d4ed8; font-weight:700; padding:.95rem 1.3rem; border-radius:999px; display:inline-flex; align-items:center; gap:.5rem; transition:transform .2s ease, background .2s ease; }
+.map-cta-overlay a:hover { transform:translateY(-2px); background:#eff6ff; }
+.stat-card { background:rgba(255,255,255,0.88); backdrop-filter:blur(8px); border:1px solid rgba(226,232,240,0.8); border-radius:20px; transition: all 0.3s; }
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -10px rgba(0,0,0,0.05); }
 </style>
 </head>
 <body class="bg-white text-gray-900">
@@ -44,7 +52,7 @@
         Ensemble.
       </h1>
       <p class="text-xl text-gray-500 mb-10 max-w-lg fade-up" style="animation-delay:0.15s">
-        Rejoignez la communauté de citoyens qui transforment leur ville en signalant les problèmes d'infrastructure.
+        Rejoignez la communauté de citoyens qui transforment leur ville en signalant les problèmes d'infrastructure et en faisant entendre leur voix.
       </p>
       <div class="flex flex-wrap gap-3 fade-up" style="animation-delay:0.25s">
         <a href="/register.html" id="heroCtaBtn"
@@ -55,6 +63,30 @@
            class="inline-flex items-center gap-2 bg-white text-gray-700 font-semibold px-8 py-4 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-gray-200 text-base">
           <i class="fas fa-eye text-gray-400"></i>Voir les signalements
         </a>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-16 fade-up" style="animation-delay:0.32s">
+      <div class="feature-card">
+        <div class="flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 mb-4">
+          <i class="fas fa-user-friends text-lg"></i>
+        </div>
+        <h3 class="font-bold text-gray-900 text-lg mb-2">Facile et accessible</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Signalez rapidement un problème avec des étapes claires, un retour immédiat et un suivi transparent.</p>
+      </div>
+      <div class="feature-card">
+        <div class="flex items-center justify-center w-12 h-12 rounded-2xl bg-amber-50 text-amber-700 mb-4">
+          <i class="fas fa-map-marker-alt text-lg"></i>
+        </div>
+        <h3 class="font-bold text-gray-900 text-lg mb-2">Local et précis</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Chaque signalement est géolocalisé pour aider les services à intervenir exactement là où c'est nécessaire.</p>
+      </div>
+      <div class="feature-card">
+        <div class="flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 mb-4">
+          <i class="fas fa-heart text-lg"></i>
+        </div>
+        <h3 class="font-bold text-gray-900 text-lg mb-2">Un impact réel</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Suivez les actions en cours et voyez comment votre participation transforme le quotidien de votre quartier.</p>
       </div>
     </div>
 
@@ -86,7 +118,7 @@
     </div>
 
     <!-- Filters -->
-    <div class="flex flex-wrap gap-2 mb-8">
+    <div class="flex flex-wrap gap-2 mb-4 items-center">
       <button class="filter-btn active px-4 py-2 font-semibold text-sm" onclick="applyFilter('statut','tous',this)">
         <i class="fas fa-th-large mr-1.5"></i>Tous
       </button>
@@ -113,6 +145,12 @@
         <i class="fas fa-tint mr-1.5"></i>Eau
       </button>
     </div>
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+      <p class="text-sm text-slate-500"><span class="badge-chip"><i class="fas fa-info-circle"></i>Filtre actif</span> Sélectionnez une catégorie ou un statut pour affiner la liste.</p>
+      <button onclick="resetFilters()" class="filter-btn px-4 py-2 font-semibold text-sm">
+        <i class="fas fa-undo mr-1.5"></i>Réinitialiser
+      </button>
+    </div>
 
     <div id="signalementsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       <div class="bg-white rounded-2xl p-6 shadow-sm animate-pulse"><div class="h-5 bg-gray-100 rounded w-3/4 mb-4"></div><div class="h-3 bg-gray-50 rounded w-full mb-2"></div><div class="h-3 bg-gray-50 rounded w-2/3 mb-6"></div><div class="flex gap-2"><div class="h-6 bg-gray-100 rounded w-24"></div></div></div>
@@ -135,7 +173,20 @@
       <div class="flex items-center gap-2 text-sm text-gray-500"><span class="w-3 h-3 rounded-full bg-blue-500"></span>En cours</div>
       <div class="flex items-center gap-2 text-sm text-gray-500"><span class="w-3 h-3 rounded-full bg-emerald-500"></span>Résolu</div>
     </div>
-    <div id="map" class="w-full h-[480px] rounded-2xl overflow-hidden border border-gray-200 shadow-sm"></div>
+    <div id="map" class="relative w-full h-[480px] rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50 flex items-center justify-center">
+      <div class="text-center">
+        <i class="fas fa-lock text-gray-300 text-5xl mb-4"></i>
+        <p class="text-gray-400 font-medium">Connectez-vous pour voir la carte interactive</p>
+      </div>
+      <div class="map-cta-overlay">
+        <div class="max-w-sm">
+          <p class="text-sm mb-4">Une carte sécurisée montre l’impact en temps réel de votre engagement local.</p>
+          <a href="/login.html">
+            <i class="fas fa-sign-in-alt"></i> Se connecter pour accéder à la carte
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -176,14 +227,19 @@
 <script src="/js/utils.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-document.getElementById('navContainer').innerHTML = renderNavbar();
-
 const me = getUser();
 if (me) {
-  const dest = me.role === 'ADMIN' ? '/admin.html' : '/dashboard.html';
-  document.getElementById('heroCtaBtn').href = dest;
-  document.getElementById('ctaBtn').href = dest;
+  if (me.role === 'ADMIN') {
+    window.location.href = '/admin.html';
+  } else {
+    const heroBtn = document.getElementById('heroCtaBtn');
+    const ctaBtn = document.getElementById('ctaBtn');
+    if (heroBtn) heroBtn.href = '/dashboard.html';
+    if (ctaBtn) ctaBtn.href = '/dashboard.html';
+  }
 }
+
+document.getElementById('navContainer').innerHTML = renderNavbar('');
 
 let allData = [];
 let filterStatut = 'tous', filterCat = null;
@@ -206,32 +262,44 @@ function updateStats(data) {
   document.getElementById('statAttente').textContent = data.filter(s=>s.statut==='EN_ATTENTE').length;
 }
 
+
 function renderCards(data) {
   const el = document.getElementById('signalementsList');
   if (!data.length) {
-    el.innerHTML = `<div class="col-span-3 text-center py-20 text-gray-300"><i class="fas fa-search text-5xl mb-4"></i><p class="text-lg">Aucun signalement trouvé</p></div>`;
+    el.innerHTML = `<div class="col-span-3 text-center py-20 text-slate-400 border-2 border-dashed border-slate-200 rounded-3xl bg-slate-50"><i class="fas fa-search text-5xl mb-4 opacity-50"></i><p class="text-lg font-bold">Aucun signalement trouvé</p></div>`;
     return;
   }
   el.innerHTML = data.map((s,i) => `
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm card-hover overflow-hidden fade-up" style="animation-delay:${i*40}ms">
-      <div class="p-6">
-        <div class="flex items-start justify-between gap-3 mb-3">
-          <h3 class="font-bold text-gray-900 text-base leading-snug line-clamp-2 flex-1">${s.titre}</h3>
-          ${catBadge(s.categorie)}
+    <div onclick="showSignalementDetails(${s.id}, () => load())" 
+         class="bg-white rounded-2xl border border-slate-100 shadow-sm card-hover overflow-hidden fade-up flex flex-col h-full" 
+         style="animation-delay:${i*40}ms">
+      ${s.photoUrl ? `
+        <div class="h-48 overflow-hidden relative border-b border-slate-50 flex-shrink-0">
+          <img src="${s.photoUrl}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" alt="${s.titre}">
         </div>
-        <p class="text-gray-400 text-sm line-clamp-2 mb-4">${s.description}</p>
-        <div class="flex items-center justify-between">
-          ${statutBadge(s.statut)}
-          <span class="text-xs text-gray-300 flex items-center gap-1">
-            <i class="fas fa-user"></i>${s.user?.nom?.split(' ')[0] || 'Anonyme'}
-          </span>
+      ` : ''}
+      <div class="p-6 flex-1 flex flex-col justify-between">
+        <div>
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <h3 class="font-extrabold text-slate-900 text-base leading-snug line-clamp-2 flex-1">${s.titre}</h3>
+            ${catBadge(s.categorie)}
+          </div>
+          <p class="text-slate-500 text-sm line-clamp-3 mb-4">${s.description}</p>
         </div>
-        ${s.latitude&&s.longitude?`
-        <div class="mt-4 pt-4 border-t border-gray-50 flex items-center gap-1.5 text-xs text-gray-300">
-          <i class="fas fa-map-marker-alt text-red-400"></i>
-          ${s.latitude.toFixed(4)}, ${s.longitude.toFixed(4)}
-          <span class="ml-auto">${timeAgo(s.dateCreation)}</span>
-        </div>`:''}
+        <div>
+          <div class="flex items-center justify-between mt-auto pt-4 border-t border-slate-50/60">
+            ${statutBadge(s.statut)}
+            <span class="text-xs font-semibold text-slate-400 flex items-center gap-1.5">
+              <i class="fas fa-user-circle text-slate-300 text-sm"></i>${s.user?.nom?.split(' ')[0] || 'Anonyme'}
+            </span>
+          </div>
+          ${s.latitude&&s.longitude?`
+          <div class="mt-3 pt-3 border-t border-slate-50 flex items-center gap-1.5 text-xs text-slate-400">
+            <i class="fas fa-map-marker-alt text-red-400"></i>
+            ${s.latitude.toFixed(4)}, ${s.longitude.toFixed(4)}
+            <span class="ml-auto flex items-center gap-1"><i class="far fa-clock"></i>${timeAgo(s.dateCreation)}</span>
+          </div>`:''}
+        </div>
       </div>
     </div>
   `).join('');
@@ -248,7 +316,23 @@ function applyFilter(type, val, btn) {
   renderCards(filtered);
 }
 
+function resetFilters() {
+  filterStatut = 'tous';
+  filterCat = null;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  const firstBtn = document.querySelector('.filter-btn');
+  if (firstBtn) firstBtn.classList.add('active');
+  renderCards(allData);
+}
+
 function initMap(data) {
+  const mapEl = document.getElementById('map');
+  const user = getUser();
+  if (!user) return;
+
+  mapEl.innerHTML = '';
+  mapEl.classList.remove('bg-gray-50', 'flex', 'items-center', 'justify-center');
+
   const map = L.map('map').setView([18.08, -15.97], 12);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors', maxZoom:19
@@ -257,14 +341,15 @@ function initMap(data) {
     if (!s.latitude || !s.longitude) return;
     const color = STAT_COLORS[s.statut] || '#6b7280';
     const icon = L.divIcon({
-      html: `<div style="width:14px;height:14px;background:${color};border:3px solid white;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,0.2)"></div>`,
-      iconSize:[14,14], iconAnchor:[7,7], className:''
+      html: `<div style="width:16px;height:16px;background:${color};border:3px solid white;border-radius:50%;box-shadow:0 3px 8px rgba(0,0,0,0.3)"></div>`,
+      iconSize:[16,16], iconAnchor:[8,8], className:''
     });
     L.marker([s.latitude, s.longitude], {icon}).addTo(map).bindPopup(`
-      <div style="font-family:Inter,sans-serif;min-width:180px;padding:4px">
+      <div style="font-family:Inter,sans-serif;min-width:185px;padding:4px">
         <p style="font-weight:800;font-size:13px;margin:0 0 5px">${s.titre}</p>
-        <p style="font-size:12px;color:#9ca3af;margin:0 0 8px">${s.description.substring(0,80)}…</p>
+        <p style="font-size:12px;color:#6b7280;margin:0 0 8px">${s.description.substring(0,80)}…</p>
         <span style="background:${color}22;color:${color};padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700">${STAT_LABELS[s.statut]}</span>
+        <button onclick="showSignalementDetails(${s.id}, () => load())" style="display:block;width:100%;margin-top:10px;padding:6px;background:#2563eb;color:white;border-radius:8px;font-size:11px;font-weight:700;text-align:center;box-shadow:0 2px 6px rgba(37,99,235,0.2)">Voir détails</button>
       </div>
     `);
   });

@@ -128,4 +128,11 @@ public class UserService {
         response.put("role", user.getRole().name());
         return response;
     }
+
+    /**
+     * Retourne la liste de tous les utilisateurs (pour l'admin).
+     */
+    public java.util.List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 }

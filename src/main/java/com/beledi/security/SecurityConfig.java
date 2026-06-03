@@ -97,6 +97,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
 
                 // === FICHIERS STATIQUES (site web) ===
+                // On autorise l'accès aux pages HTML car le contrôle d'accès
+                // est géré côté client (JS) pour la navigation,
+                // et sécurisé côté API pour les données.
                 .requestMatchers("/", "/*.html", "/js/**", "/css/**", "/images/**", "/uploads/**").permitAll()
 
                 // === ROUTES PUBLIQUES (pas de token requis) ===

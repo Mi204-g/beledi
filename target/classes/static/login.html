@@ -11,12 +11,12 @@
 <style>
 * { font-family: 'Inter', sans-serif; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-.fade-up { animation: fadeUp 0.4s ease forwards; }
+.fade-up { animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 .input-field {
-  width:100%; padding:12px 12px 12px 44px; border:1.5px solid #e5e7eb; border-radius:12px;
-  font-size:15px; transition:all 0.2s; outline:none; background:#fafafa; color:#111827;
+  width:100%; padding:13px 14px 13px 44px; border:1.5px solid #e2e8f0; border-radius:14px;
+  font-size:15px; transition:all 0.25s ease; outline:none; background:#f8fafc; color:#0f172a;
 }
-.input-field:focus { border-color:#3b82f6; background:white; box-shadow:0 0 0 3px rgba(59,130,246,0.1); }
+.input-field:focus { border-color:#2563eb; background:white; box-shadow:0 0 0 4px rgba(37,99,235,0.08); }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
@@ -53,7 +53,7 @@
         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Adresse email</label>
         <div class="relative">
           <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
-          <input type="email" id="email" class="input-field" placeholder="votre@email.com">
+          <input type="email" id="email" class="input-field" placeholder="votre@email.com" autocomplete="email" required>
         </div>
       </div>
 
@@ -62,8 +62,8 @@
         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Mot de passe</label>
         <div class="relative">
           <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
-          <input type="password" id="motDePasse" class="input-field" placeholder="••••••••">
-          <button type="button" onclick="togglePwd()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors">
+          <input type="password" id="motDePasse" class="input-field" placeholder="••••••••" autocomplete="current-password" required>
+          <button type="button" onclick="togglePwd()" aria-label="Afficher ou masquer le mot de passe" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors">
             <i class="fas fa-eye" id="eyeIcon"></i>
           </button>
         </div>

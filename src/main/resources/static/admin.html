@@ -6,6 +6,7 @@
 <title>Administration — Beledi</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
 <style>
@@ -26,6 +27,14 @@
 .status-RESOLU     { background:#d1fae5; color:#065f46; border-color:#a7f3d0; }
 .row-enter { animation: fadeUp 0.3s ease forwards; opacity:0; }
 .pill { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; padding:4px 12px; border-radius:20px; }
+.nav-link { color: #64748b; }
+.nav-link:hover { color: #2563eb; background: #eff6ff; }
+.nav-link.active { background: #2563eb; color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+.section-note { color: #475569; font-size: 0.95rem; line-height: 1.75; }
+.section-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.section-header h2 { margin: 0; }
+.section-label { display: inline-flex; align-items: center; gap: 0.35rem; background: #dbeafe; color: #1d4ed8; padding: 0.55rem 0.95rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; }
+.section-small { color: #64748b; font-size: 0.9rem; }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -34,25 +43,50 @@
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-  <!-- Header -->
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 fade-up">
-    <div>
-      <div class="flex items-center gap-3 mb-2">
-        <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
-          <i class="fas fa-shield-alt text-white text-sm"></i>
+  <!-- New Integrated Admin Header -->
+  <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 mb-10 fade-up" id="page-header">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-100">
+          <i class="fas fa-shield-alt text-white text-lg"></i>
         </div>
-        <h1 class="text-3xl font-black text-gray-900">Tableau de bord</h1>
+        <div>
+          <h1 class="text-2xl font-black text-gray-900 leading-tight">Administration</h1>
+          <p class="text-sm text-gray-500 font-medium">Gestion de la plateforme Beledi</p>
+          <p class="text-xs text-slate-400 mt-2 max-w-xl">Utilisez les cadres ci-dessous pour suivre les signalements, superviser les utilisateurs et piloter les interventions.</p>
+        </div>
       </div>
-      <p class="text-gray-500">Gérez les signalements et suivez l'activité citoyenne</p>
-    </div>
-    <div class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-2.5 rounded-xl text-sm font-semibold">
-      <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-      Administrateur connecté
+      
+      <div class="flex flex-wrap items-center gap-2 p-1.5 bg-gray-50 rounded-2xl border border-gray-100">
+        <a href="#view-stats" class="nav-link px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2" data-section="view-stats">
+          <i class="fas fa-chart-pie"></i><span>Stats</span>
+        </a>
+        <a href="#view-signalements" class="nav-link px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2" data-section="view-signalements">
+          <i class="fas fa-list-ul"></i><span>Signalements</span>
+        </a>
+        <a href="#view-users" class="nav-link px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2" data-section="view-users">
+          <i class="fas fa-users"></i><span>Utilisateurs</span>
+        </a>
+        <a href="#view-carte" class="nav-link px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2" data-section="view-carte">
+          <i class="fas fa-map-marked-alt"></i><span>Carte</span>
+        </a>
+      </div>
     </div>
   </div>
 
+  <div class="bg-slate-50 border border-slate-100 rounded-3xl p-6 mb-10 fade-up">
+    <div class="section-header">
+      <div>
+        <p class="text-xs uppercase tracking-[0.25em] font-bold text-slate-400">Vue rapide</p>
+        <h2 class="text-xl font-black text-slate-900 mt-2">Pilotez l’action en un coup d’œil</h2>
+      </div>
+      <span class="section-label"><i class="fas fa-bolt"></i>Administration</span>
+    </div>
+    <p class="section-note mt-4">Sélectionnez un onglet pour gérer les signalements, modifier le statut d’un dossier, consulter les utilisateurs ou visualiser les incidents sur la carte.</p>
+  </div>
+
   <!-- Stats cards -->
-  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+  <div id="stats-row" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
     <div class="stat-card bg-white shadow-sm border border-gray-100 fade-up" style="animation-delay:0.05s; --shadow:rgba(0,0,0,0.08)">
       <div class="flex items-center justify-between mb-3">
         <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center"><i class="fas fa-flag text-blue-500"></i></div>
@@ -90,52 +124,121 @@
   <!-- Categories mini-stats -->
   <div id="catStats" class="flex flex-wrap gap-3 mb-8 fade-up" style="animation-delay:0.25s"></div>
 
-  <!-- Signalements table -->
-  <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden fade-up" style="animation-delay:0.3s">
-    <!-- Table header -->
-    <div class="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <h2 class="text-lg font-bold text-gray-900"><i class="fas fa-list-ul mr-2 text-gray-400"></i>Tous les signalements</h2>
-      <div class="flex items-center gap-3">
-        <div class="relative">
-          <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-          <input type="text" id="searchInput" placeholder="Rechercher…"
-                 class="pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 w-48"
-                 oninput="filterTable()">
+  <!-- Dashboard Grid -->
+  <div id="dashboard-grid" class="grid grid-cols-1 lg:grid-cols-12 gap-6 fade-up" style="animation-delay:0.3s">
+    
+    <!-- Left Column: Signalements & Users -->
+    <div id="left-column" class="lg:col-span-8 space-y-6">
+      
+      <!-- View Stats (Container for stats cards if needed elsewhere, but they are currently above) -->
+      <div id="view-stats" style="display:none">
+         <div class="bg-blue-50 border border-blue-100 rounded-3xl p-8 text-center">
+            <h2 class="text-2xl font-black text-blue-800 mb-2">Bienvenue dans l'administration</h2>
+            <p class="text-blue-600">Utilisez le menu pour gérer les signalements, les utilisateurs ou consulter la carte.</p>
+         </div>
+      </div>
+
+  <!-- Signalements Section -->
+      <div id="view-signalements" class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden" style="display:none">
+        <div class="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-gray-900"><i class="fas fa-list-ul mr-2 text-gray-400"></i>Signalements</h2>
+            <p class="section-small mt-1">Trouvez rapidement un signalement et mettez à jour son statut.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="section-label"><i class="fas fa-list"></i> <span id="signalementsCount">0</span> signalements</span>
+            <div class="relative">
+              <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+              <input type="text" id="searchInput" placeholder="Rechercher…"
+                     class="pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 w-48"
+                     oninput="filterTable()">
+            </div>
+          </div>
+        </div>
+        <div class="max-h-[500px] overflow-y-auto overflow-x-hidden">
+          <table class="w-full">
+            <thead class="sticky top-0 bg-gray-50 z-10">
+              <tr class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-4">Signalement</th>
+                <th class="px-6 py-4">Statut</th>
+                <th class="px-6 py-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody" class="divide-y divide-gray-50 text-sm">
+              <tr><td colspan="3" class="px-6 py-16 text-center text-gray-400"><i class="fas fa-spinner fa-spin text-3xl mb-3 block"></i>Chargement…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Users Section -->
+      <div id="view-users" class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden" style="display:none">
+        <div class="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-bold text-gray-900"><i class="fas fa-users mr-2 text-gray-400"></i>Utilisateurs</h2>
+            <p class="section-small mt-1">Voir qui participe et consultez rapidement les rôles.</p>
+          </div>
+          <span class="section-label"><i class="fas fa-user-check"></i> <span id="usersCount">0</span> comptes</span>
+        </div>
+        <div class="max-h-[300px] overflow-y-auto">
+          <table class="w-full">
+            <thead class="sticky top-0 bg-gray-50 z-10">
+              <tr class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-4">Utilisateur</th>
+                <th class="px-6 py-4">Rôle</th>
+                <th class="px-6 py-4 text-right">Inscription</th>
+              </tr>
+            </thead>
+            <tbody id="userTableBody" class="divide-y divide-gray-50 text-sm">
+              <tr><td colspan="3" class="px-6 py-16 text-center text-gray-400"><i class="fas fa-spinner fa-spin text-3xl mb-3 block"></i>Chargement…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Map & Filter -->
+    <div id="right-column" class="lg:col-span-4 space-y-6">
+      <!-- Filter Card -->
+      <div id="filter-card" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between gap-3 mb-4">
+          <div>
+            <h3 class="font-bold text-gray-900 flex items-center gap-2">
+              <i class="fas fa-filter text-blue-500"></i> Filtrer par statut
+            </h3>
+            <p class="section-small mt-1">Affinez la liste tout en gardant le contexte des incidents.</p>
+          </div>
+          <button onclick="filterTable()" class="text-blue-600 text-xs font-semibold uppercase tracking-[0.15em] hover:text-blue-800 transition-colors">Actualiser</button>
         </div>
         <select id="filterStatut" onchange="filterTable()"
-                class="border border-gray-200 rounded-xl text-sm py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                class="w-full border border-gray-200 rounded-xl text-sm py-3 px-4 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-gray-50 font-medium">
           <option value="">Tous les statuts</option>
           <option value="EN_ATTENTE">En attente</option>
           <option value="EN_COURS">En cours</option>
           <option value="RESOLU">Résolu</option>
         </select>
       </div>
+
+      <!-- Map Card -->
+      <div id="view-carte" class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden sticky top-24 scroll-mt-24" style="display:none">
+        <div class="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-bold text-gray-900"><i class="fas fa-map-marker-alt mr-2 text-gray-400"></i>Carte</h2>
+            <p class="section-small mt-1">Visualisez en un coup d’œil l’emplacement des incidents actifs.</p>
+          </div>
+          <span class="section-label"><i class="fas fa-location-arrow"></i> Cliquez sur un point pour ouvrir un détail</span>
+        </div>
+        <div class="p-2">
+          <div id="adminMap" class="w-full h-[600px] rounded-2xl overflow-hidden shadow-inner bg-gray-100"></div>
+        </div>
+      </div>
     </div>
 
-    <!-- Table -->
-    <div class="overflow-x-auto">
-      <table class="w-full">
-        <thead>
-          <tr class="bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-            <th class="px-6 py-4">Signalement</th>
-            <th class="px-6 py-4 hidden sm:table-cell">Catégorie</th>
-            <th class="px-6 py-4 hidden md:table-cell">Citoyen</th>
-            <th class="px-6 py-4 hidden lg:table-cell">Date</th>
-            <th class="px-6 py-4">Statut</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody" class="divide-y divide-gray-50">
-          <tr><td colspan="5" class="px-6 py-16 text-center text-gray-400"><i class="fas fa-spinner fa-spin text-3xl mb-3 block"></i>Chargement…</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div id="tableFooter" class="px-6 py-4 border-t border-gray-50 text-sm text-gray-400 hidden">
-      <span id="tableCount"></span>
-    </div>
   </div>
 
 </div>
+
+
 
 <!-- Toast notification -->
 <div id="toast" class="fixed bottom-6 right-6 bg-gray-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 transform translate-y-24 opacity-0 transition-all duration-300 z-50 text-sm font-medium">
@@ -144,11 +247,157 @@
 </div>
 
 <script src="/js/utils.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 if (!requireAdmin()) throw '';
-document.getElementById('navContainer').innerHTML = renderNavbar();
+
+// Section management
+const SECTIONS = ['view-stats', 'view-signalements', 'view-users', 'view-carte'];
+
+function showSection(sectionId) {
+  SECTIONS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      if (id === sectionId) {
+        el.style.display = 'block';
+        // Add fade-up animation
+        el.classList.remove('fade-up');
+        void el.offsetWidth; // trigger reflow
+        el.classList.add('fade-up');
+      } else {
+        el.style.display = 'none';
+      }
+    }
+  });
+  
+  // Layout adjustments
+  const grid = document.getElementById('dashboard-grid');
+  const leftCol = document.getElementById('left-column');
+  const rightCol = document.getElementById('right-column');
+  const filterCard = document.getElementById('filter-card');
+  const catStats = document.getElementById('catStats');
+  const header = document.getElementById('page-header');
+  const statsRow = document.getElementById('stats-row');
+
+  if (sectionId === 'view-stats') {
+    grid.className = "grid grid-cols-1 lg:grid-cols-12 gap-6 fade-up";
+    leftCol.className = "lg:col-span-8 space-y-6";
+    rightCol.style.display = 'block';
+    filterCard.style.display = 'none';
+    catStats.style.display = 'flex';
+    statsRow.style.display = 'grid';
+  } else if (sectionId === 'view-carte') {
+    grid.className = "block fade-up";
+    leftCol.style.display = 'none';
+    rightCol.className = "w-full";
+    rightCol.style.display = 'block';
+    filterCard.style.display = 'none';
+    catStats.style.display = 'none';
+    statsRow.style.display = 'none';
+  } else {
+    // signalements or users
+    grid.className = "grid grid-cols-1 lg:grid-cols-12 gap-6 fade-up";
+    leftCol.style.display = 'block';
+    leftCol.className = "lg:col-span-8 space-y-6";
+    rightCol.style.display = (sectionId === 'view-signalements') ? 'block' : 'none';
+    filterCard.style.display = 'block';
+    catStats.style.display = 'none';
+    statsRow.style.display = 'none';
+  }
+
+  // Update active state in nav
+  document.querySelectorAll('.nav-link').forEach(link => {
+    if (link.getAttribute('data-section') === sectionId) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+
+  let navId = '';
+  if (sectionId === 'view-stats') navId = 'admin-dash';
+  if (sectionId === 'view-signalements') navId = 'admin-sig';
+  if (sectionId === 'view-users') navId = 'admin-users';
+  if (sectionId === 'view-carte') navId = 'admin-carte';
+  
+  if (document.getElementById('navContainer')) {
+    document.getElementById('navContainer').innerHTML = renderNavbar(navId);
+  }
+  
+  // Re-init map if needed
+  if (sectionId === 'view-carte') {
+    setTimeout(initAdminMap, 100);
+  }
+}
+
+// Handle hash change
+window.addEventListener('hashchange', () => {
+  const hash = window.location.hash.substring(1);
+  if (SECTIONS.includes(hash)) {
+    showSection(hash);
+  } else {
+    showSection('view-stats');
+  }
+});
+
+// Initial load
+const initialHash = window.location.hash.substring(1);
+document.getElementById('navContainer').innerHTML = renderNavbar(initialHash === 'view-signalements' ? 'admin-sig' : 
+                                                                initialHash === 'view-users' ? 'admin-users' :
+                                                                initialHash === 'view-carte' ? 'admin-carte' : 'admin-dash');
 
 let allData = [];
+let allUsers = [];
+let adminMap, mapInitialized = false;
+
+window.addEventListener('load', async () => {
+  await loadStats();
+  await loadSignalements();
+  await loadUsers();
+  
+  const initialHash = window.location.hash.substring(1);
+  if (SECTIONS.includes(initialHash)) {
+    showSection(initialHash);
+  } else {
+    window.location.hash = 'view-stats';
+    showSection('view-stats');
+  }
+});
+
+function initAdminMap() {
+  if (mapInitialized) return;
+  adminMap = L.map('adminMap').setView([18.08, -15.97], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors', maxZoom:19
+  }).addTo(adminMap);
+  renderMarkers();
+  mapInitialized = true;
+}
+
+function renderMarkers() {
+  if (!adminMap) return;
+  // Clear existing markers
+  adminMap.eachLayer(layer => {
+    if (layer instanceof L.Marker) adminMap.removeLayer(layer);
+  });
+  
+  allData.forEach(s => {
+    if (!s.latitude || !s.longitude) return;
+    const color = STAT_COLORS[s.statut] || '#6b7280';
+    const icon = L.divIcon({
+      html: `<div style="width:14px;height:14px;background:${color};border:3px solid white;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,0.2)"></div>`,
+      iconSize:[14,14], iconAnchor:[7,7], className:''
+    });
+    L.marker([s.latitude, s.longitude], {icon}).addTo(adminMap).bindPopup(`
+      <div style="font-family:Inter,sans-serif;min-width:180px;padding:4px">
+        <p style="font-weight:800;font-size:13px;margin:0 0 5px">${s.titre}</p>
+        <p style="font-size:12px;color:#9ca3af;margin:0 0 8px">${s.description.substring(0,80)}…</p>
+        <span style="background:${color}22;color:${color};padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700">${STAT_LABELS[s.statut]}</span>
+        <button onclick="showDetails(${s.id})" style="display:block;width:100%;margin-top:8px;padding:4px;background:#f3f4f6;border-radius:6px;font-size:11px;font-weight:600;color:#3b82f6">Détails</button>
+      </div>
+    `);
+  });
+}
 
 // ── Load stats ────────────────────────────────────────────────────────────────
 async function loadStats() {
@@ -173,43 +422,69 @@ async function loadStats() {
 async function loadSignalements() {
   allData = await apiGet('/signalements');
   renderTable(allData);
+  if (mapInitialized) renderMarkers();
+}
+
+// ── Load Users ────────────────────────────────────────────────────────────────
+async function loadUsers() {
+  allUsers = await apiGet('/admin/users');
+  document.getElementById('usersCount').textContent = allUsers?.length || 0;
+  const body = document.getElementById('userTableBody');
+  if (!allUsers || !allUsers.length) {
+    body.innerHTML = `<tr><td colspan="3" class="px-6 py-16 text-center text-gray-400"><i class="fas fa-user-slash text-4xl mb-3 block opacity-30"></i>Aucun utilisateur trouvé</td></tr>`;
+    return;
+  }
+  body.innerHTML = allUsers.map((u, i) => `
+    <tr class="hover:bg-gray-50 transition-colors row-enter" style="animation-delay:${i * 30}ms">
+      <td class="px-6 py-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">
+            ${u.nom.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <div class="font-bold text-gray-900">${u.nom}</div>
+            <div class="text-xs text-gray-400">${u.email}</div>
+          </div>
+        </div>
+      </td>
+      <td class="px-6 py-4">
+        <span class="px-3 py-1 rounded-full text-[10px] font-bold ${u.role==='ADMIN'?'bg-purple-100 text-purple-700':'bg-gray-100 text-gray-600'}">
+          ${u.role}
+        </span>
+      </td>
+      <td class="px-6 py-4 text-right text-xs text-gray-400">${new Date(u.dateInscription).toLocaleDateString()}</td>
+    </tr>
+  `).join('');
 }
 
 function renderTable(data) {
+  document.getElementById('signalementsCount').textContent = data.length;
   const body = document.getElementById('tableBody');
-  const foot = document.getElementById('tableFooter');
-  document.getElementById('tableCount').textContent = `${data.length} signalement(s) affiché(s)`;
-  foot.classList.toggle('hidden', data.length === 0);
-
   if (!data.length) {
-    body.innerHTML = `<tr><td colspan="5" class="px-6 py-16 text-center text-gray-400"><i class="fas fa-search text-4xl mb-3 block opacity-30"></i>Aucun résultat</td></tr>`;
+    body.innerHTML = `<tr><td colspan="3" class="px-6 py-16 text-center text-gray-400"><i class="fas fa-search text-4xl mb-3 block opacity-30"></i>Aucun résultat trouvé,<br>essayez une recherche différente.</td></tr>`;
     return;
   }
   body.innerHTML = data.map((s,i) => `
     <tr class="hover:bg-gray-50 transition-colors row-enter" style="animation-delay:${i*30}ms" id="row-${s.id}">
       <td class="px-6 py-4">
         <div class="font-semibold text-gray-900 text-sm line-clamp-1 max-w-xs">${s.titre}</div>
-        <div class="text-xs text-gray-400 line-clamp-1 max-w-xs mt-0.5">${s.description}</div>
-      </td>
-      <td class="px-6 py-4 hidden sm:table-cell">${catBadge(s.categorie)}</td>
-      <td class="px-6 py-4 hidden md:table-cell">
-        <div class="flex items-center gap-2">
-          <span class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-            ${(s.user?.nom||'?').charAt(0).toUpperCase()}
-          </span>
-          <span class="text-sm text-gray-700 font-medium">${s.user?.nom||'—'}</span>
+        <div class="flex items-center gap-2 mt-1">
+          ${catBadge(s.categorie)}
+          <span class="text-[10px] text-gray-400">par ${s.user?.nom||'—'}</span>
         </div>
       </td>
-      <td class="px-6 py-4 hidden lg:table-cell">
-        <span class="text-xs text-gray-400">${timeAgo(s.dateCreation)}</span>
-      </td>
       <td class="px-6 py-4">
-        <select class="status-select status-${s.statut}" onchange="updateStatut(${s.id}, this)"
+        <select class="status-select status-${s.statut} text-[11px]" onchange="updateStatut(${s.id}, this)"
                 id="sel-${s.id}" data-current="${s.statut}">
-          <option value="EN_ATTENTE" ${s.statut==='EN_ATTENTE'?'selected':''}>⏳ En attente</option>
+          <option value="EN_ATTENTE" ${s.statut==='EN_ATTENTE'?'selected':''}>⏳ Attente</option>
           <option value="EN_COURS"   ${s.statut==='EN_COURS'?'selected':''}>🔧 En cours</option>
           <option value="RESOLU"     ${s.statut==='RESOLU'?'selected':''}>✅ Résolu</option>
         </select>
+      </td>
+      <td class="px-6 py-4 text-right">
+        <button onclick="showDetails(${s.id})" class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors" title="Voir détails">
+          <i class="fas fa-eye"></i>
+        </button>
       </td>
     </tr>
   `).join('');
@@ -231,11 +506,24 @@ async function updateStatut(id, sel) {
     if (item) item.statut = newStatut;
     // Update stats
     loadStats();
+    if (mapInitialized) {
+      renderMarkers();
+    }
     showToast('Statut mis à jour avec succès', 'check-circle', 'text-emerald-400');
   } else {
     sel.value = old;
     showToast('Erreur lors de la mise à jour', 'exclamation-circle', 'text-red-400');
   }
+
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  filterTable();
+}
+
+function showDetails(id) {
+  showSignalementDetails(id, () => {
+    loadStats();
+    loadSignalements();
+  });
 }
 
 function filterTable() {

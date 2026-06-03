@@ -1,11 +1,14 @@
 package com.beledi.controller;
 
+import com.beledi.model.User;
 import com.beledi.service.SignalementService;
+import com.beledi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,6 +27,9 @@ public class AdminController {
 
     @Autowired
     private SignalementService signalementService;
+
+    @Autowired
+    private UserService userService;
 
     // =========================================================================
     // GET /api/admin/statistiques — Tableau de bord admin
@@ -51,5 +57,10 @@ public class AdminController {
     @GetMapping("/statistiques")
     public ResponseEntity<Map<String, Object>> getStatistiques() {
         return ResponseEntity.ok(signalementService.getStatistiques());
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 }
