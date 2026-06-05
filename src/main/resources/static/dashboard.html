@@ -208,6 +208,7 @@ select.input-field { cursor:pointer; }
 </div>
 
 <script src="/js/utils.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 if (!requireAuth()) throw '';
 const user = getUser();
@@ -223,7 +224,15 @@ function showTab(id, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
-  if (id === 'nouveau' && !mapInitialized) { initPickMap(); mapInitialized = true; }
+  if (id === 'nouveau' && !mapInitialized) { 
+    initPickMap(); 
+    mapInitialized = true; 
+  } else if (id === 'nouveau' && mapInitialized) {
+    setTimeout(() => { 
+      pickMap.invalidateSize();
+      pickMap.setView([18.08, -15.97], 12);
+    }, 100);
+  }
 }
 
 // ── Load my signalements ─────────────────────────────────────────────────────
@@ -323,6 +332,10 @@ let pickMap, pickMarker;
 function initPickMap() {
   pickMap = L.map('pickMap').setView([18.08, -15.97], 12);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19 }).addTo(pickMap);
+  
+  // Call invalidateSize after initialization to ensure it's rendered correctly
+  setTimeout(() => { pickMap.invalidateSize(); }, 200);
+
   pickMap.on('click', e => {
     const {lat, lng} = e.latlng;
     document.getElementById('lat').value = lat.toFixed(6);
@@ -393,6 +406,7 @@ document.getElementById('signalementForm').addEventListener('submit', async e =>
     document.getElementById('autreTypeDiv').classList.add('hidden');
     clearPhoto();
     if (pickMarker) { pickMap.removeLayer(pickMarker); pickMarker = null; }
+    pickMap.setView([18.08, -15.97], 12);
     loadMes();
     setTimeout(() => { document.querySelector('.tab-btn').click(); }, 1500);
   } else if (res.status === 403 || res.status === 401) {

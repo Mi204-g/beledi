@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -107,27 +108,34 @@ public class SignalementService {
         
         // Sauvegarder le fichier photo localement
         if (photo != null && !photo.isEmpty()) {
-            // Créer le répertoire de stockage s'il n'existe pas
-            String uploadDir = "uploads/photos";
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
+            try {
+                // Créer le répertoire de stockage s'il n'existe pas
+                String uploadDir = "uploads/photos";
+                Path uploadPath = Paths.get(uploadDir);
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+                
+                // Générer un nom de fichier unique
+                String originalFilename = photo.getOriginalFilename();
+                String extension = "";
+                if (originalFilename != null && originalFilename.contains(".")) {
+                    extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                }
+                String newFilename = UUID.randomUUID().toString() + extension;
+                
+                // Sauvegarder le fichier
+                Path filePath = uploadPath.resolve(newFilename);
+                Files.copy(photo.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                
+                // Stocker l'URL relative
+                photoUrl = "/uploads/photos/" + newFilename;
+            } catch (IOException e) {
+                // Log l'erreur ou la relancer selon besoin
+                System.err.println("Erreur lors de la sauvegarde de l'image : " + e.getMessage());
+                // On peut choisir de continuer sans image ou de bloquer la création
+                throw new RuntimeException("Erreur lors de l'enregistrement de la photo : " + e.getMessage());
             }
-            
-            // Générer un nom de fichier unique
-            String originalFilename = photo.getOriginalFilename();
-            String extension = "";
-            if (originalFilename != null && originalFilename.contains(".")) {
-                extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            }
-            String newFilename = UUID.randomUUID().toString() + extension;
-            
-            // Sauvegarder le fichier
-            Path filePath = uploadPath.resolve(newFilename);
-            Files.copy(photo.getInputStream(), filePath);
-            
-            // Stocker l'URL relative
-            photoUrl = "/" + uploadDir + "/" + newFilename;
         }
 
         Signalement signalement = new Signalement();
