@@ -135,4 +135,18 @@ public class UserService {
     public java.util.List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
+    public void deleteUser(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new RuntimeException("Utilisateur introuvable");
+        }
+        userRepository.deleteById(userId);
+    }
+
+    public void updateUserRole(Long userId, String roleName) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+        user.setRole(Role.valueOf(roleName));
+        userRepository.save(user);
+    }
 }

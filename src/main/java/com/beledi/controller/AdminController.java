@@ -63,4 +63,32 @@ public class AdminController {
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
+
+    @PutMapping("/users/{id}/role")
+    public ResponseEntity<?> updateUserRole(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body) {
+        try {
+            String roleName = body.get("role");
+            if (roleName == null || roleName.isBlank()) {
+                return ResponseEntity.badRequest().body(Map.of("erreur", "Le rôle est requis"));
+            }
+            userService.updateUserRole(id, roleName);
+            return ResponseEntity.ok(Map.of("message", "Rôle utilisateur mis à jour avec succès"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("erreur", "Rôle invalide"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("erreur", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.ok(Map.of("message", "Utilisateur supprimé avec succès"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("erreur", e.getMessage()));
+        }
+    }
 }
